@@ -10,7 +10,7 @@ export default function InvitationPublique() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/public/invitations/${slug}`)
+    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/public/invitations/${slug}`)
       .then((res) => setInvitation(res.data.data))
       .catch(() => setNotFound(true));
   }, [slug]);
