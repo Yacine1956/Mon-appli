@@ -8,21 +8,43 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     api.get('/api/me')
-      .then((res) => setUser(res.data))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch(() => {
+        localStorage.removeItem('token');
+        setUser(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   async function login(email, password) {
-    await api.get('/sanctum/csrf-cookie');
-    const res = await api.post('/api/login', { email, password });
+    const res = await api.post('/api/login', {
+      email,
+      password,
+    });
+
+    localStorage.setItem('token', res.data.token);
     setUser(res.data.user);
   }
 
   async function logout() {
-    await api.post('/api/logout');
-    setUser(null);
+    try {
+      await api.post('/api/logout');
+    } finally {
+      localStorage.removeItem('token');
+      setUser(null);
+    }
   }
 
   return (

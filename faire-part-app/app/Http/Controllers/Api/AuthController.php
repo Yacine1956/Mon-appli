@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+
+
 
 class AuthController extends Controller
 {
@@ -17,24 +18,33 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => 'Identifiants incorrects.',
             ]);
         }
 
-        $request->session()->regenerate();
+        $user = Auth::user();
 
-        return response()->json(['user' => Auth::user()]);
+        // Supprime les anciens tokens si nécessaire
+        $user->tokens()->delete();
+
+        // Création du token Sanctum
+        $token = $user->createToken('faire-part-app')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->user()->currentAccessToken()->delete();
 
-        return response()->noContent();
+        return response()->json([
+            'message' => 'Déconnexion réussie.',
+        ]);
     }
 
     public function me(Request $request)
@@ -42,4 +52,3 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 }
-
