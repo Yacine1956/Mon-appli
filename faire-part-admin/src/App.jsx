@@ -17,7 +17,7 @@ function PrivateRoute({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/app">
+    <BrowserRouter >
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
