@@ -33,12 +33,20 @@ export default function InvitationDetail() {
         const payload = {
         ...form,
         date_mariage: form.date_mariage?.slice(0, 10),
-        heure_ceremonie: form.heure_ceremonie || null,
-        heure_reception: form.heure_reception || null,
+
+        heure_ceremonie: form.heure_ceremonie
+        ? form.heure_ceremonie.slice(0, 5)
+        : null,
+
+        heure_reception: form.heure_reception
+          ? form.heure_reception.slice(0, 5)
+          : null,
+
         lieu_ceremonie: form.lieu_ceremonie || null,
         lieu_reception: form.lieu_reception || null,
         message_bienvenue: form.message_bienvenue || null,
         };
+        
         const res = await api.put(`/api/invitations/${id}`, payload);
         setInvitation(res.data.data);
         setForm(res.data.data);
