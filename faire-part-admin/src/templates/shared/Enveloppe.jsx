@@ -3,48 +3,49 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LecteurMusique from './LecteurMusique';
 
 /* =========================================================
-   INITIALLES DES MARIÉS
+   INITIALLES
    "Awa et Talla" → "A & T"
 ========================================================= */
-
 function getInitiales(nomsMaries) {
-  if (!nomsMaries) return '';
+  if (!nomsMaries) return '♥';
 
-  const mots = nomsMaries
+  const parties = nomsMaries
     .trim()
     .split(/\s+(?:et|&)\s+/i)
     .filter(Boolean);
 
-  if (mots.length >= 2) {
-    const premier = mots[0].trim().charAt(0).toUpperCase();
-    const second = mots[1].trim().charAt(0).toUpperCase();
-
-    return `${premier} & ${second}`;
+  if (parties.length >= 2) {
+    return `${parties[0].charAt(0).toUpperCase()} & ${parties[1]
+      .charAt(0)
+      .toUpperCase()}`;
   }
 
-  const lettres = nomsMaries
+  const mots = nomsMaries
     .trim()
     .split(/\s+/)
-    .filter(Boolean)
-    .map((mot) => mot.charAt(0).toUpperCase());
+    .filter(Boolean);
 
-  return lettres.slice(0, 2).join(' & ');
+  if (mots.length >= 2) {
+    return `${mots[0].charAt(0).toUpperCase()} & ${mots[1]
+      .charAt(0)
+      .toUpperCase()}`;
+  }
+
+  return mots[0]?.charAt(0).toUpperCase() || '♥';
 }
 
 /* =========================================================
-   FLEUR DÉCORATIVE
+   PETITE FLEUR
 ========================================================= */
-
-function Fleur({ className = '', taille = 'text-5xl', rotation = 0 }) {
+function Fleur({ className = '', style = {}, scale = 1 }) {
   return (
     <motion.div
-      className={`absolute pointer-events-none select-none ${className}`}
-      style={{ rotate: rotation }}
-      initial={{ opacity: 0, scale: 0.5 }}
+      className={`absolute pointer-events-none ${className}`}
+      style={style}
+      initial={{ opacity: 0, scale: 0.6 }}
       animate={{
-        opacity: [0.65, 1, 0.65],
-        scale: [0.96, 1.04, 0.96],
-        rotate: [rotation - 2, rotation + 2, rotation - 2],
+        opacity: [0.55, 1, 0.7],
+        scale: [0.95 * scale, 1.05 * scale, 0.98 * scale],
       }}
       transition={{
         duration: 5,
@@ -52,88 +53,153 @@ function Fleur({ className = '', taille = 'text-5xl', rotation = 0 }) {
         ease: 'easeInOut',
       }}
     >
-      <div className={`relative ${taille}`}>
-        <span className="absolute inset-0 text-[#D7A5AD]">✿</span>
-        <span className="relative text-[#EBC6CC]">✿</span>
-      </div>
-    </motion.div>
-  );
-}
-
-/* =========================================================
-   PETITE BRANCHE FLORALE
-========================================================= */
-
-function BrancheFlorale({ className = '', miroir = false }) {
-  return (
-    <motion.div
-      className={`absolute pointer-events-none ${className}`}
-      initial={{ opacity: 0, scale: 0.7 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.2, ease: 'easeOut' }}
-    >
       <div
-        className={`relative w-36 h-36 ${
-          miroir ? '-scale-x-100' : ''
-        }`}
+        className="relative"
+        style={{
+          width: `${42 * scale}px`,
+          height: `${42 * scale}px`,
+        }}
       >
-        {/* Tige */}
-        <div
-          className="
-            absolute
-            left-[48%]
-            top-[18%]
-            w-[2px]
-            h-[90px]
-            bg-[#9EAD88]/70
-            rotate-[38deg]
-            origin-top
-          "
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+          <span
+            key={angle}
+            className="absolute left-1/2 top-1/2 rounded-full"
+            style={{
+              width: `${15 * scale}px`,
+              height: `${24 * scale}px`,
+              transform: `
+                translate(-50%, -50%)
+                rotate(${angle}deg)
+                translateY(-9px)
+              `,
+              transformOrigin: '50% 100%',
+              background:
+                'linear-gradient(135deg, #fff1f2 0%, #f8c8d0 55%, #d89aa6 100%)',
+              boxShadow: '0 2px 7px rgba(90, 20, 35, 0.12)',
+            }}
+          />
+        ))}
+
+        <span
+          className="absolute left-1/2 top-1/2 rounded-full"
+          style={{
+            width: `${10 * scale}px`,
+            height: `${10 * scale}px`,
+            transform: 'translate(-50%, -50%)',
+            background:
+              'radial-gradient(circle at 35% 30%, #fff8d7, #d7a83f 65%, #9b6b19)',
+            boxShadow: '0 0 8px rgba(215,168,63,.45)',
+          }}
         />
-
-        {/* Feuilles */}
-        <span className="absolute top-10 left-12 text-[#A9B695] text-xl rotate-[-35deg]">
-          ❧
-        </span>
-
-        <span className="absolute top-16 left-20 text-[#A9B695] text-lg rotate-[35deg]">
-          ❧
-        </span>
-
-        <span className="absolute top-24 left-8 text-[#A9B695] text-sm rotate-[-20deg]">
-          ❧
-        </span>
-
-        {/* Fleurs */}
-        <span className="absolute top-1 left-4 text-[#E7B8C0] text-4xl">
-          ✿
-        </span>
-
-        <span className="absolute top-9 left-20 text-[#D79BA7] text-3xl">
-          ✿
-        </span>
-
-        <span className="absolute top-20 left-2 text-[#F0CDD2] text-2xl">
-          ✿
-        </span>
-
-        {/* Petits boutons floraux */}
-        <span className="absolute top-4 left-24 text-[#D6B477] text-xs">
-          ✦
-        </span>
-
-        <span className="absolute top-28 left-20 text-[#D6B477] text-xs">
-          ✦
-        </span>
       </div>
     </motion.div>
   );
 }
 
 /* =========================================================
-   COMPOSANT PRINCIPAL
+   BRANCHE FLORALE
 ========================================================= */
+function BrancheFlorale({ flip = false }) {
+  return (
+    <svg
+      viewBox="0 0 180 150"
+      className={`absolute w-[150px] sm:w-[190px] pointer-events-none ${
+        flip ? 'scale-x-[-1]' : ''
+      }`}
+      fill="none"
+    >
+      <path
+        d="M12 138 C45 105, 58 74, 93 45 C119 24, 142 13, 169 9"
+        stroke="#b48a38"
+        strokeWidth="1.5"
+        opacity=".65"
+      />
 
+      <path
+        d="M47 105 C39 89, 29 82, 18 78"
+        stroke="#b48a38"
+        strokeWidth="1.2"
+        opacity=".55"
+      />
+
+      <path
+        d="M71 76 C70 58, 63 48, 53 39"
+        stroke="#b48a38"
+        strokeWidth="1.2"
+        opacity=".55"
+      />
+
+      <path
+        d="M103 42 C100 29, 104 20, 111 13"
+        stroke="#b48a38"
+        strokeWidth="1.2"
+        opacity=".55"
+      />
+
+      <ellipse
+        cx="27"
+        cy="76"
+        rx="8"
+        ry="4"
+        transform="rotate(32 27 76)"
+        fill="#d8b96a"
+        opacity=".6"
+      />
+
+      <ellipse
+        cx="57"
+        cy="41"
+        rx="8"
+        ry="4"
+        transform="rotate(45 57 41)"
+        fill="#d8b96a"
+        opacity=".6"
+      />
+
+      <ellipse
+        cx="111"
+        cy="13"
+        rx="8"
+        ry="4"
+        transform="rotate(-20 111 13)"
+        fill="#d8b96a"
+        opacity=".6"
+      />
+
+      <circle cx="53" cy="39" r="4" fill="#efd4da" />
+      <circle cx="111" cy="13" r="4" fill="#efd4da" />
+      <circle cx="18" cy="78" r="4" fill="#efd4da" />
+    </svg>
+  );
+}
+
+/* =========================================================
+   PARTICULE
+========================================================= */
+function Particule({ style, delay = 0 }) {
+  return (
+    <motion.span
+      className="absolute w-1 h-1 rounded-full bg-[#f4d78a]"
+      style={style}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{
+        opacity: [0, 0.8, 0],
+        scale: [0, 1, 0],
+        y: [-5, -22],
+      }}
+      transition={{
+        duration: 3.5,
+        delay,
+        repeat: Infinity,
+        ease: 'easeOut',
+      }}
+    />
+  );
+}
+
+/* =========================================================
+   ENVELOPPE FLEURIE ROMANTIQUE
+========================================================= */
 export default function Enveloppe({
   nomsMaries,
   musiqueUrl,
@@ -143,893 +209,488 @@ export default function Enveloppe({
   const [ouverte, setOuverte] = useState(false);
   const [animationTerminee, setAnimationTerminee] = useState(false);
 
+  const initiales = getInitiales(nomsMaries);
+
   useEffect(() => {
-    if (!ouverte) return;
+    document.body.style.overflow = ouverte ? 'hidden' : 'hidden';
 
-    const timer = setTimeout(() => {
-      setAnimationTerminee(true);
-    }, 2200);
-
-    return () => clearTimeout(timer);
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [ouverte]);
 
-  function handleClick() {
+  const handleClick = () => {
     if (ouverte) return;
 
     setOuverte(true);
-    onOuvrir?.();
-  }
 
-  const initiales = getInitiales(nomsMaries);
+    if (onOuvrir) {
+      setTimeout(() => {
+        onOuvrir();
+      }, 700);
+    }
+
+    setTimeout(() => {
+      setAnimationTerminee(true);
+    }, 2300);
+  };
 
   return (
-    <>
+    <div
+      className="fixed inset-0 z-[9999] overflow-hidden"
+      style={{
+        background:
+          'radial-gradient(circle at 50% 35%, #6f1d2c 0%, #4c101d 38%, #26070f 100%)',
+      }}
+    >
       {/* =====================================================
-          MUSIQUE
+          HALOS LUMINEUX
       ===================================================== */}
-
-      <LecteurMusique
-        url={musiqueUrl}
-        demarrer={ouverte}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{
+          opacity: [0.35, 0.55, 0.35],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+        style={{
+          background:
+            'radial-gradient(circle at center, rgba(232,190,95,.16), transparent 42%)',
+        }}
       />
 
-      <AnimatePresence mode="wait">
-        {!animationTerminee && (
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle at 20% 20%, rgba(255,220,180,.08), transparent 25%), radial-gradient(circle at 80% 80%, rgba(255,190,200,.07), transparent 30%)',
+        }}
+      />
+
+      {/* =====================================================
+          PARTICULES
+      ===================================================== */}
+      <Particule style={{ left: '12%', bottom: '24%' }} delay={0} />
+      <Particule style={{ left: '21%', bottom: '37%' }} delay={1.2} />
+      <Particule style={{ left: '30%', bottom: '17%' }} delay={2.1} />
+      <Particule style={{ left: '70%', bottom: '25%' }} delay={0.7} />
+      <Particule style={{ left: '79%', bottom: '40%' }} delay={1.8} />
+      <Particule style={{ left: '88%', bottom: '18%' }} delay={2.5} />
+
+      {/* =====================================================
+          FLEURS DÉCORATIVES
+      ===================================================== */}
+      <Fleur
+        className="left-[5%] top-[10%]"
+        scale={1}
+      />
+
+      <Fleur
+        className="right-[5%] top-[14%]"
+        scale={0.8}
+      />
+
+      <Fleur
+        className="left-[8%] bottom-[12%]"
+        scale={0.65}
+      />
+
+      <Fleur
+        className="right-[8%] bottom-[10%]"
+        scale={0.7}
+      />
+
+      <BrancheFlorale
+        flip={false}
+        style={{
+          left: '-10px',
+          top: '20px',
+        }}
+      />
+
+      <div className="absolute right-0 top-0">
+        <BrancheFlorale flip />
+      </div>
+
+      {/* =====================================================
+          CONTENU CENTRAL
+      ===================================================== */}
+      <div className="relative z-10 flex h-full w-full items-center justify-center px-5">
+        <motion.div
+          initial={{ opacity: 0, y: 35, scale: 0.94 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+          }}
+          transition={{
+            duration: 1.1,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="relative w-full max-w-[390px]"
+        >
+          {/* =================================================
+              OMBRE
+          ================================================= */}
           <motion.div
-            className="
-              fixed inset-0
-              z-[9999]
-              flex items-center justify-center
-              overflow-hidden
-              bg-[#F8EDEF]
-              px-4
-            "
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{
-              opacity: 0,
-              scale: 1.04,
-              transition: {
-                duration: 0.9,
-                ease: 'easeInOut',
-              },
+            className="absolute left-1/2 top-[92%] h-12 w-[85%] -translate-x-1/2 rounded-full bg-black/40 blur-2xl"
+            animate={{
+              scaleX: ouverte ? 0.7 : 1,
+              opacity: ouverte ? 0.18 : 0.45,
+            }}
+            transition={{ duration: 1 }}
+          />
+
+          {/* =================================================
+              ENVELOPPE
+          ================================================= */}
+          <div
+            className="relative"
+            style={{
+              perspective: '1400px',
             }}
           >
             {/* =================================================
-                FOND ROMANTIQUE
+                CARTE INTÉRIEURE
             ================================================= */}
-
-            <div
-              className="
-                absolute inset-0
-                bg-[radial-gradient(
-                  ellipse_at_center,
-                  #fffdfb_0%,
-                  #f9e9ed_48%,
-                  #efd4dc_100%
-                )]
-              "
-            />
-
-            {/* Lumière centrale */}
-
             <motion.div
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                -translate-x-1/2
-                -translate-y-1/2
-                w-[520px]
-                h-[520px]
-                rounded-full
-                bg-[#fffaff]/80
-                blur-[100px]
-              "
+              className="absolute left-[7%] top-[5%] z-[1] w-[86%] overflow-hidden rounded-[4px]"
+              initial={{
+                y: 0,
+                opacity: 0,
+              }}
               animate={{
-                scale: [1, 1.12, 1],
-                opacity: [0.5, 0.9, 0.5],
+                y: ouverte ? '-62%' : 0,
+                opacity: ouverte ? 1 : 0,
               }}
               transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: 'easeInOut',
+                duration: 1.4,
+                delay: 0.65,
+                ease: [0.22, 1, 0.36, 1],
               }}
-            />
-
-            {/* Halos roses */}
-
-            <motion.div
-              className="
-                absolute
-                -left-40
-                bottom-[-120px]
-                w-[450px]
-                h-[450px]
-                rounded-full
-                bg-[#D99DAF]/20
-                blur-[100px]
-              "
-              animate={{
-                x: [0, 25, 0],
-                y: [0, -15, 0],
+              style={{
+                height: '84%',
+                background:
+                  'linear-gradient(145deg, #fffdf8 0%, #fff8ed 100%)',
+                boxShadow:
+                  '0 18px 45px rgba(0,0,0,.25), inset 0 0 0 1px rgba(180,138,56,.25)',
               }}
-              transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-
-            <motion.div
-              className="
-                absolute
-                -right-40
-                top-[-120px]
-                w-[450px]
-                h-[450px]
-                rounded-full
-                bg-[#D9B878]/15
-                blur-[100px]
-              "
-              animate={{
-                x: [0, -20, 0],
-                y: [0, 20, 0],
-              }}
-              transition={{
-                duration: 9,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-
-            {/* =================================================
-                FLEURS DANS LES COINS
-            ================================================= */}
-
-            <BrancheFlorale
-              className="top-0 left-0 -translate-x-5 -translate-y-3"
-            />
-
-            <BrancheFlorale
-              className="top-0 right-0 translate-x-5 -translate-y-3"
-              miroir
-            />
-
-            <BrancheFlorale
-              className="bottom-0 left-0 -translate-x-5 translate-y-5"
-              miroir
-            />
-
-            <BrancheFlorale
-              className="bottom-0 right-0 translate-x-5 translate-y-5"
-            />
-
-            {/* Fleurs supplémentaires */}
-
-            <Fleur
-              className="top-[17%] left-[13%]"
-              taille="text-3xl"
-              rotation={-20}
-            />
-
-            <Fleur
-              className="top-[25%] right-[13%]"
-              taille="text-2xl"
-              rotation={20}
-            />
-
-            <Fleur
-              className="bottom-[23%] left-[12%]"
-              taille="text-2xl"
-              rotation={15}
-            />
-
-            <Fleur
-              className="bottom-[19%] right-[12%]"
-              taille="text-3xl"
-              rotation={-15}
-            />
-
-            {/* =================================================
-                PARTICULES DORÉES
-            ================================================= */}
-
-            {[
-              { top: '15%', left: '28%' },
-              { top: '20%', right: '28%' },
-              { top: '45%', left: '8%' },
-              { top: '51%', right: '8%' },
-              { bottom: '18%', left: '30%' },
-              { bottom: '15%', right: '30%' },
-            ].map((item, index) => (
-              <motion.span
-                key={index}
-                className="
-                  absolute
-                  text-[#C8A15D]
-                  text-xs
-                  pointer-events-none
-                "
-                style={{
-                  top: item.top,
-                  left: item.left,
-                  right: item.right,
-                  bottom: item.bottom,
-                }}
-                animate={{
-                  opacity: [0.2, 0.9, 0.2],
-                  scale: [0.7, 1.3, 0.7],
-                  y: [0, -8, 0],
-                }}
-                transition={{
-                  duration: 3 + index * 0.4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: index * 0.4,
-                }}
-              >
-                ✦
-              </motion.span>
-            ))}
-
-            {/* =================================================
-                CONTENU CENTRAL
-            ================================================= */}
-
-            <div
-              className="
-                relative
-                z-20
-                flex
-                flex-col
-                items-center
-                justify-center
-                w-full
-                max-w-[620px]
-              "
             >
-              {/* Texte supérieur */}
+              {/* bordure intérieure */}
+              <div className="absolute inset-3 border border-[#d6b76a]/40" />
 
-              <motion.div
-                className="text-center mb-8 sm:mb-10"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.4,
-                  duration: 0.9,
-                }}
-              >
-                <p
-                  className="
-                    uppercase
-                    tracking-[0.4em]
-                    text-[9px]
-                    sm:text-[10px]
-                    text-[#A66D7B]
-                  "
-                >
-                  Une histoire d'amour
-                </p>
-
-                <div className="flex items-center justify-center gap-3 mt-3">
-                  <div className="w-10 sm:w-14 h-px bg-[#C6A06A]/60" />
-
-                  <span className="text-[#C6A06A] text-xs">
-                    ❦
-                  </span>
-
-                  <div className="w-10 sm:w-14 h-px bg-[#C6A06A]/60" />
-                </div>
-              </motion.div>
-
-              {/* =================================================
-                  ENVELOPPE FLORALE
-              ================================================= */}
-
-              <motion.div
-                className="
-                  relative
-                  w-[min(91vw,560px)]
-                  aspect-[1.5/1]
-                  [perspective:1600px]
-                "
-                initial={{
-                  opacity: 0,
-                  y: 45,
-                  scale: 0.88,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: [0, -5, 0],
-                  scale: 1,
-                }}
-                transition={{
-                  opacity: {
-                    duration: 0.9,
-                  },
-                  scale: {
-                    duration: 1,
-                    ease: [0.22, 1, 0.36, 1],
-                  },
-                  y: {
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  },
-                }}
-              >
-                {/* Ombre */}
-
-                <motion.div
-                  className="
-                    absolute
-                    left-[8%]
-                    right-[8%]
-                    bottom-[-28px]
-                    h-[32px]
-                    rounded-full
-                    bg-[#8D5967]/20
-                    blur-[18px]
-                  "
-                  animate={{
-                    scaleX: [1, 0.93, 1],
-                    opacity: [0.5, 0.3, 0.5],
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-
-                {/* Corps de l'enveloppe */}
-
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    overflow-hidden
-                    rounded-[8px]
-                    border
-                    border-[#D1B17B]/80
-                    bg-gradient-to-br
-                    from-[#FFFDFC]
-                    via-[#F9EDEF]
-                    to-[#EBCFD7]
-                    shadow-[0_25px_60px_rgba(133,78,96,0.2)]
-                  "
-                >
-                  {/* Texture douce */}
-
-                  <div
-                    className="
-                      absolute inset-0
-                      bg-[radial-gradient(
-                        circle_at_25%_20%,
-                        rgba(255,255,255,0.95),
-                        transparent 35%
-                      )]
-                    "
-                  />
-
-                  {/* Motifs floraux sur l'enveloppe */}
-
-                  <div className="absolute top-0 left-0 text-[#DCAAB6]/60 text-7xl -translate-x-5 -translate-y-5">
-                    ❀
-                  </div>
-
-                  <div className="absolute top-0 right-0 text-[#DCAAB6]/60 text-7xl translate-x-5 -translate-y-5">
-                    ❀
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 text-[#DCAAB6]/50 text-6xl -translate-x-4 translate-y-4">
-                    ❀
-                  </div>
-
-                  <div className="absolute bottom-0 right-0 text-[#DCAAB6]/50 text-6xl translate-x-4 translate-y-4">
-                    ❀
-                  </div>
-
-                  {/* Poche inférieure */}
-
-                  <div
-                    className="
-                      absolute
-                      inset-x-0
-                      bottom-0
-                      h-[62%]
-                      bg-gradient-to-b
-                      from-[#F8E8EC]
-                      via-[#F2DCE3]
-                      to-[#E8C6D1]
-                      [clip-path:polygon(0_0,50%_54%,100%_0,100%_100%,0_100%)]
-                    "
-                  />
-
-                  {/* Bordure florale centrale */}
-
-                  <div
-                    className="
-                      absolute
-                      left-0
-                      right-0
-                      bottom-[50%]
-                      h-px
-                      bg-[#C9A66F]/40
-                    "
-                  />
-
-                  {/* Petits ornements */}
-
-                  <span className="absolute left-[8%] top-[43%] text-[#C8A15D]/50 text-sm">
-                    ✦
-                  </span>
-
-                  <span className="absolute right-[8%] top-[43%] text-[#C8A15D]/50 text-sm">
-                    ✦
-                  </span>
+              <div className="relative flex h-full flex-col items-center justify-center px-7 text-center">
+                <div className="mb-3 text-[9px] uppercase tracking-[0.38em] text-[#a47a32]">
+                  Une invitation spéciale
                 </div>
 
-                {/* =================================================
-                    CARTE INTÉRIEURE
-                ================================================= */}
-
-                <motion.div
-                  className="
-                    absolute
-                    z-[4]
-                    left-1/2
-                    bottom-[8%]
-                    -translate-x-1/2
-                    w-[60%]
-                    h-[75%]
-                    bg-[#FFFDFC]
-                    border
-                    border-[#D5B77F]/70
-                    shadow-[0_15px_35px_rgba(91,57,69,0.16)]
-                    flex
-                    items-center
-                    justify-center
-                    overflow-hidden
-                  "
-                  initial={{ y: 0 }}
-                  animate={{
-                    y: ouverte ? -190 : 0,
-                  }}
-                  transition={{
-                    duration: 1.2,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  {/* Cadre intérieur */}
-
-                  <div
-                    className="
-                      absolute
-                      inset-[8px]
-                      border
-                      border-[#D3B47B]/50
-                    "
-                  />
-
-                  <div
-                    className="
-                      absolute
-                      inset-[13px]
-                      border
-                      border-[#D3B47B]/20
-                    "
-                  />
-
-                  {/* Petit motif floral */}
-
-                  <span className="absolute top-3 left-4 text-[#D9AAB5]/60 text-xl">
-                    ❀
-                  </span>
-
-                  <span className="absolute bottom-3 right-4 text-[#D9AAB5]/60 text-xl">
-                    ❀
-                  </span>
-
-                  <div className="relative z-10 text-center px-4">
-                    <p
-                      className="
-                        uppercase
-                        tracking-[0.35em]
-                        text-[7px]
-                        text-[#A77B85]
-                      "
-                    >
-                      Invitation
-                    </p>
-
-                    <div
-                      className="
-                        font-serif
-                        text-2xl
-                        sm:text-3xl
-                        italic
-                        text-[#704653]
-                        mt-3
-                      "
-                    >
-                      {initiales}
-                    </div>
-
-                    <div className="flex items-center justify-center gap-2 mt-3">
-                      <span className="w-5 h-px bg-[#C6A06A]" />
-
-                      <span className="text-[#C6A06A] text-[10px]">
-                        ❦
-                      </span>
-
-                      <span className="w-5 h-px bg-[#C6A06A]" />
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* =================================================
-                    RUBAN VERTICAL ROSE
-                ================================================= */}
-
-                <motion.div
-                  className="
-                    absolute
-                    z-[7]
-                    top-0
-                    bottom-0
-                    left-1/2
-                    -translate-x-1/2
-                    w-[42px]
-                    pointer-events-none
-                    overflow-hidden
-                  "
-                  animate={{
-                    opacity: ouverte ? 0 : 1,
-                  }}
-                  transition={{
-                    duration: 0.45,
-                    delay: 0.7,
-                  }}
-                >
-                  <div
-                    className="
-                      absolute inset-0
-                      bg-gradient-to-r
-                      from-[#C98E9D]
-                      via-[#F1D0D8]
-                      to-[#C98E9D]
-                    "
-                  />
-
-                  <div className="absolute left-0 top-0 bottom-0 w-px bg-[#A96F7D]/40" />
-
-                  <div className="absolute right-0 top-0 bottom-0 w-px bg-[#A96F7D]/40" />
-                </motion.div>
-
-                {/* =================================================
-                    RABAT SUPÉRIEUR FLORAL
-                ================================================= */}
-
-                <motion.div
-                  className="
-                    absolute
-                    z-[8]
-                    top-0
-                    left-0
-                    right-0
-                    h-[76%]
-                    origin-top
-                    [clip-path:polygon(0_0,100%_0,50%_76%)]
-                    bg-gradient-to-b
-                    from-[#FFFDFC]
-                    via-[#F9E9EE]
-                    to-[#EBCED8]
-                    border-t
-                    border-[#D1B17B]
-                    [backface-visibility:hidden]
-                  "
-                  animate={{
-                    rotateX: ouverte ? -175 : 0,
-                  }}
-                  transition={{
-                    duration: 1.15,
-                    ease: [0.65, 0, 0.35, 1],
-                  }}
-                  style={{
-                    transformStyle: 'preserve-3d',
-                  }}
-                >
-                  {/* Décoration florale du rabat */}
-
-                  <div className="absolute top-[10%] left-[8%] text-[#D8A5B1]/50 text-3xl">
-                    ❀
-                  </div>
-
-                  <div className="absolute top-[10%] right-[8%] text-[#D8A5B1]/50 text-3xl">
-                    ❀
-                  </div>
-
-                  {/* Ligne décorative */}
-
-                  <div
-                    className="
-                      absolute
-                      inset-[9px]
-                      [clip-path:polygon(0_0,100%_0,50%_76%)]
-                      border
-                      border-[#CBA86E]/30
-                    "
-                  />
-                </motion.div>
-
-                {/* =================================================
-                    SCEAU FLORAL CENTRAL
-                ================================================= */}
-
-                <motion.button
-                  type="button"
-                  onClick={handleClick}
-                  aria-label="Ouvrir l'invitation"
-                  className="
-                    absolute
-                    z-[20]
-                    left-1/2
-                    top-[51%]
-                    -translate-x-1/2
-                    -translate-y-1/2
-                    w-[116px]
-                    h-[116px]
-                    sm:w-[128px]
-                    sm:h-[128px]
-                    rounded-full
-                    flex
-                    items-center
-                    justify-center
-                    cursor-pointer
-                    outline-none
-                    bg-gradient-to-br
-                    from-[#E9BFC8]
-                    via-[#C98C9D]
-                    to-[#A96578]
-                    shadow-[0_18px_38px_rgba(123,62,82,0.3)]
-                  "
-                  animate={
-                    ouverte
-                      ? {
-                          scale: 1.18,
-                          y: -5,
-                          opacity: 0,
-                        }
-                      : {
-                          y: [0, -4, 0],
-                          scale: [1, 1.025, 1],
-                        }
-                  }
-                  whileHover={
-                    !ouverte
-                      ? {
-                          scale: 1.08,
-                          rotate: 2,
-                        }
-                      : undefined
-                  }
-                  whileTap={
-                    !ouverte
-                      ? {
-                          scale: 0.92,
-                        }
-                      : undefined
-                  }
-                  transition={
-                    ouverte
-                      ? {
-                          duration: 0.7,
-                          ease: 'easeOut',
-                        }
-                      : {
-                          y: {
-                            duration: 3.5,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
-                          },
-                          scale: {
-                            duration: 3.5,
-                            repeat: Infinity,
-                            ease: 'easeInOut',
-                          },
-                        }
-                  }
-                >
-                  {/* Bordures dorées */}
-
-                  <div
-                    className="
-                      absolute
-                      inset-[5px]
-                      rounded-full
-                      border
-                      border-[#F5DDA4]/90
-                    "
-                  />
-
-                  <div
-                    className="
-                      absolute
-                      inset-[11px]
-                      rounded-full
-                      border
-                      border-[#F5DDA4]/50
-                    "
-                  />
-
-                  {/* Fleur centrale */}
-
-                  <span className="absolute top-[14px] text-[#F9DFE4] text-xl">
-                    ✿
-                  </span>
-
-                  <span className="absolute bottom-[13px] text-[#F9DFE4] text-xl">
-                    ✿
-                  </span>
-
-                  {/* Initiales */}
-
-                  <span
-                    className="
-                      relative
-                      z-10
-                      font-serif
-                      text-[28px]
-                      sm:text-[32px]
-                      tracking-wide
-                      text-[#FFF0D1]
-                      drop-shadow-[0_2px_3px_rgba(90,45,60,0.35)]
-                    "
-                  >
-                    {initiales}
-                  </span>
-                </motion.button>
-
-                {/* =================================================
-                    INDICATION D'OUVERTURE
-                ================================================= */}
-
-                <motion.div
-                  className="
-                    absolute
-                    z-[30]
-                    left-1/2
-                    bottom-[-72px]
-                    -translate-x-1/2
-                    flex
-                    flex-col
-                    items-center
-                    text-center
-                    whitespace-nowrap
-                  "
-                  animate={{
-                    opacity: ouverte ? 0 : 1,
-                    y: ouverte ? 10 : 0,
-                  }}
-                  transition={{
-                    duration: 0.35,
-                  }}
-                >
-                  <p
-                    className="
-                      font-serif
-                      italic
-                      text-[19px]
-                      sm:text-[21px]
-                      text-[#754957]
-                    "
-                  >
-                    Ouvrez votre invitation
-                  </p>
-
-                  <p
-                    className="
-                      mt-1.5
-                      uppercase
-                      tracking-[0.28em]
-                      text-[7px]
-                      sm:text-[8px]
-                      text-[#A77B85]
-                    "
-                  >
-                    Touchez le sceau floral
-                  </p>
-                </motion.div>
-              </motion.div>
-
-              {/* =================================================
-                  SIGNATURE
-              ================================================= */}
-
-              <motion.div
-                className="mt-24 text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  delay: 1.2,
-                }}
-              >
-                <div className="flex items-center justify-center gap-3">
-                  <div className="w-8 sm:w-12 h-px bg-[#C6A06A]/60" />
-
-                  <span className="text-[#C6A06A] text-xs">
-                    ❦
-                  </span>
-
-                  <div className="w-8 sm:w-12 h-px bg-[#C6A06A]/60" />
+                <div className="mb-2 font-serif text-2xl text-[#5b1725]">
+                  Vous êtes invités
                 </div>
 
-                <p
-                  className="
-                    mt-3
-                    uppercase
-                    tracking-[0.28em]
-                    text-[7px]
-                    text-[#A77B85]
-                  "
-                >
-                  Avec toute notre affection
-                </p>
-              </motion.div>
-            </div>
+                <div className="h-px w-20 bg-gradient-to-r from-transparent via-[#c8a04b] to-transparent" />
+
+                <div className="mt-4 text-[10px] tracking-[0.18em] text-[#8a6a3a]">
+                  À NOTRE HISTOIRE D'AMOUR
+                </div>
+              </div>
+            </motion.div>
 
             {/* =================================================
-                FLASH D'OUVERTURE
+                CORPS DE L'ENVELOPPE
             ================================================= */}
+            <motion.div
+              className="relative z-[3] overflow-hidden rounded-[5px]"
+              animate={{
+                scale: ouverte ? 0.96 : 1,
+              }}
+              transition={{
+                duration: 1.2,
+                delay: 0.8,
+              }}
+              style={{
+                height: '255px',
+                background:
+                  'linear-gradient(145deg, #7b2032 0%, #641424 45%, #4a0d19 100%)',
+                boxShadow:
+                  '0 30px 70px rgba(0,0,0,.42), inset 0 0 0 1px rgba(244,215,138,.5)',
+                border: '1px solid rgba(232,194,101,.55)',
+              }}
+            >
+              {/* texture */}
+              <div
+                className="absolute inset-0 opacity-[0.13] pointer-events-none"
+                style={{
+                  backgroundImage:
+                    'radial-gradient(rgba(255,255,255,.7) .5px, transparent .5px)',
+                  backgroundSize: '7px 7px',
+                }}
+              />
 
-            <AnimatePresence>
-              {ouverte && (
-                <motion.div
-                  className="
-                    fixed
-                    inset-0
-                    z-[9998]
-                    pointer-events-none
-                    bg-[#FFF9FC]
-                  "
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.7, 0] }}
-                  transition={{
-                    duration: 1.2,
-                    times: [0, 0.3, 1],
-                    ease: 'easeOut',
+              {/* coins lumineux */}
+              <div className="absolute left-4 top-4 h-16 w-16 rounded-full bg-[#e8c56c]/10 blur-xl" />
+              <div className="absolute right-4 bottom-4 h-20 w-20 rounded-full bg-[#f2c7cf]/10 blur-xl" />
+
+              {/* =================================================
+                  RABAT SUPÉRIEUR
+              ================================================= */}
+              <motion.div
+                className="absolute left-0 top-0 z-[7] h-[52%] w-full"
+                animate={{
+                  rotateX: ouverte ? -178 : 0,
+                  translateY: ouverte ? '-3%' : '0%',
+                }}
+                transition={{
+                  duration: 1.35,
+                  delay: 0.15,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  transformOrigin: '50% 0%',
+                  transformStyle: 'preserve-3d',
+                  clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
+                  background:
+                    'linear-gradient(145deg, #8b293d 0%, #671625 55%, #4c0d19 100%)',
+                  borderBottom: '1px solid rgba(236,199,111,.55)',
+                  backfaceVisibility: 'hidden',
+                }}
+              >
+                {/* bordure du rabat */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
+                    borderTop: '1px solid rgba(245,220,151,.45)',
                   }}
                 />
-              )}
-            </AnimatePresence>
+
+                {/* petites fleurs sur le rabat */}
+                <div className="absolute left-[18%] top-[18%]">
+                  <Fleur scale={0.38} />
+                </div>
+
+                <div className="absolute right-[18%] top-[18%]">
+                  <Fleur scale={0.38} />
+                </div>
+              </motion.div>
+
+              {/* =================================================
+                  CÔTÉS DE L'ENVELOPPE
+              ================================================= */}
+              <div
+                className="absolute bottom-0 left-0 z-[5] h-[72%] w-[52%]"
+                style={{
+                  clipPath: 'polygon(0 0, 100% 100%, 0 100%)',
+                  background:
+                    'linear-gradient(145deg, #741c2d 0%, #54101e 100%)',
+                  borderRight: '1px solid rgba(226,187,99,.35)',
+                }}
+              />
+
+              <div
+                className="absolute bottom-0 right-0 z-[5] h-[72%] w-[52%]"
+                style={{
+                  clipPath: 'polygon(100% 0, 100% 100%, 0 100%)',
+                  background:
+                    'linear-gradient(225deg, #7c2032 0%, #500f1c 100%)',
+                  borderLeft: '1px solid rgba(226,187,99,.35)',
+                }}
+              />
+
+              {/* =================================================
+                  BAS DE L'ENVELOPPE
+              ================================================= */}
+              <div
+                className="absolute bottom-0 left-0 z-[6] h-[62%] w-full"
+                style={{
+                  clipPath: 'polygon(0 100%, 50% 18%, 100% 100%)',
+                  background:
+                    'linear-gradient(180deg, #691626 0%, #4c0d19 100%)',
+                }}
+              />
+
+              {/* =================================================
+                  ORNEMENT CENTRAL
+              ================================================= */}
+              <motion.div
+                className="absolute left-1/2 top-[55%] z-[20] -translate-x-1/2 -translate-y-1/2"
+                animate={{
+                  scale: ouverte ? 0.85 : 1,
+                  opacity: ouverte ? 0 : 1,
+                }}
+                transition={{
+                  duration: 0.65,
+                  delay: 0.1,
+                }}
+              >
+                {/* halo */}
+                <div className="absolute inset-[-18px] rounded-full bg-[#e8c56c]/10 blur-xl" />
+
+                {/* cercle extérieur */}
+                <div
+                  className="relative flex h-[82px] w-[82px] items-center justify-center rounded-full"
+                  style={{
+                    background:
+                      'linear-gradient(145deg, #e8ca78, #a97621)',
+                    boxShadow:
+                      '0 10px 28px rgba(0,0,0,.35), inset 0 2px 4px rgba(255,255,255,.5)',
+                  }}
+                >
+                  {/* sceau */}
+                  <div
+                    className="flex h-[68px] w-[68px] items-center justify-center rounded-full"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 35% 30%, #9c3046, #681627 68%, #450b16)',
+                      border: '2px solid rgba(255,232,163,.75)',
+                      boxShadow:
+                        'inset 0 3px 8px rgba(255,255,255,.12), inset 0 -5px 10px rgba(0,0,0,.25)',
+                    }}
+                  >
+                    <div className="text-center">
+                      <div
+                        className="font-serif text-[18px] tracking-wide"
+                        style={{
+                          color: '#f8e3a8',
+                          textShadow: '0 1px 2px rgba(0,0,0,.3)',
+                        }}
+                      >
+                        {initiales}
+                      </div>
+
+                      <div className="mt-0.5 text-[7px] uppercase tracking-[0.25em] text-[#efdba0]">
+                        amour
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* =================================================
+                  TEXTE
+              ================================================= */}
+              <motion.div
+                className="absolute bottom-[17px] left-0 z-[15] w-full text-center"
+                animate={{
+                  opacity: ouverte ? 0 : 1,
+                  y: ouverte ? 10 : 0,
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <p className="font-serif text-[17px] italic text-[#f7e8c3]">
+                  Ouvrez votre invitation
+                </p>
+
+                <p className="mt-1 text-[8px] uppercase tracking-[0.32em] text-[#d8bb73]">
+                  Touchez le sceau
+                </p>
+              </motion.div>
+
+              {/* =================================================
+                  FLEURS BAS GAUCHE / DROITE
+              ================================================= */}
+              <div className="absolute bottom-[-4px] left-[5px] z-[10]">
+                <Fleur scale={0.52} />
+              </div>
+
+              <div className="absolute bottom-[-3px] right-[5px] z-[10]">
+                <Fleur scale={0.48} />
+              </div>
+            </motion.div>
+
+            {/* =================================================
+                BOUTON INVISIBLE
+            ================================================= */}
+            {!ouverte && (
+              <button
+                type="button"
+                aria-label="Ouvrir l'invitation"
+                onClick={handleClick}
+                className="absolute inset-0 z-[50] cursor-pointer"
+              />
+            )}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* =====================================================
+          MESSAGE APRÈS OUVERTURE
+      ===================================================== */}
+      <AnimatePresence>
+        {animationTerminee && (
+          <motion.div
+            className="absolute bottom-7 left-1/2 z-[100] -translate-x-1/2 text-center"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              ease: 'easeOut',
+            }}
+          >
+            <div className="rounded-full border border-[#e6c778]/25 bg-black/10 px-5 py-2 backdrop-blur-sm">
+              <span className="text-[9px] uppercase tracking-[0.35em] text-[#ecd79d]">
+                Bienvenue dans notre histoire
+              </span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* =====================================================
-          INVITATION PRINCIPALE
+          FLASH D'OUVERTURE
       ===================================================== */}
+      <AnimatePresence>
+        {ouverte && (
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-[200] bg-[#fff8e8]"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: [0, 0.22, 0],
+            }}
+            transition={{
+              duration: 1.2,
+              delay: 0.75,
+              times: [0, 0.25, 1],
+            }}
+          />
+        )}
+      </AnimatePresence>
 
-      <motion.div
-        initial={{
-          opacity: 0,
-          scale: 1.025,
-          y: 10,
-        }}
-        animate={{
-          opacity: animationTerminee ? 1 : 0,
-          scale: animationTerminee ? 1 : 1.025,
-          y: animationTerminee ? 0 : 10,
-        }}
-        transition={{
-          duration: 1,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      >
-        {children}
-      </motion.div>
-    </>
+      {/* =====================================================
+          MUSIQUE
+      ===================================================== */}
+      <LecteurMusique
+        url={musiqueUrl}
+        demarrer={ouverte}
+      />
+
+      {/* =====================================================
+          CONTENU DE L'INVITATION
+      ===================================================== */}
+      <AnimatePresence>
+        {animationTerminee && (
+          <motion.div
+            className="absolute inset-0 z-[300] overflow-y-auto"
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 1,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
