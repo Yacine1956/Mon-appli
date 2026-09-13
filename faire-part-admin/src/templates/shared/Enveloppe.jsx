@@ -3,14 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import LecteurMusique from './LecteurMusique';
 
 /* =========================================================
-   INITIALLES
-   "Awa et Samba" → "A & S"
+   INITIALLES DES MARIÉS
+   "Awa et Talla" → "A & T"
 ========================================================= */
 
 function getInitiales(nomsMaries) {
   if (!nomsMaries) return '';
 
-  // Accepte : "Awa et Talla", "Awa & Talla", "Awa et Talla Sarr"
   const mots = nomsMaries
     .trim()
     .split(/\s+(?:et|&)\s+/i)
@@ -23,7 +22,6 @@ function getInitiales(nomsMaries) {
     return `${premier} & ${second}`;
   }
 
-  // Si aucun séparateur n'est trouvé
   const lettres = nomsMaries
     .trim()
     .split(/\s+/)
@@ -33,6 +31,108 @@ function getInitiales(nomsMaries) {
   return lettres.slice(0, 2).join(' & ');
 }
 
+/* =========================================================
+   FLEUR DÉCORATIVE
+========================================================= */
+
+function Fleur({ className = '', taille = 'text-5xl', rotation = 0 }) {
+  return (
+    <motion.div
+      className={`absolute pointer-events-none select-none ${className}`}
+      style={{ rotate: rotation }}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{
+        opacity: [0.65, 1, 0.65],
+        scale: [0.96, 1.04, 0.96],
+        rotate: [rotation - 2, rotation + 2, rotation - 2],
+      }}
+      transition={{
+        duration: 5,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      }}
+    >
+      <div className={`relative ${taille}`}>
+        <span className="absolute inset-0 text-[#D7A5AD]">✿</span>
+        <span className="relative text-[#EBC6CC]">✿</span>
+      </div>
+    </motion.div>
+  );
+}
+
+/* =========================================================
+   PETITE BRANCHE FLORALE
+========================================================= */
+
+function BrancheFlorale({ className = '', miroir = false }) {
+  return (
+    <motion.div
+      className={`absolute pointer-events-none ${className}`}
+      initial={{ opacity: 0, scale: 0.7 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2, ease: 'easeOut' }}
+    >
+      <div
+        className={`relative w-36 h-36 ${
+          miroir ? '-scale-x-100' : ''
+        }`}
+      >
+        {/* Tige */}
+        <div
+          className="
+            absolute
+            left-[48%]
+            top-[18%]
+            w-[2px]
+            h-[90px]
+            bg-[#9EAD88]/70
+            rotate-[38deg]
+            origin-top
+          "
+        />
+
+        {/* Feuilles */}
+        <span className="absolute top-10 left-12 text-[#A9B695] text-xl rotate-[-35deg]">
+          ❧
+        </span>
+
+        <span className="absolute top-16 left-20 text-[#A9B695] text-lg rotate-[35deg]">
+          ❧
+        </span>
+
+        <span className="absolute top-24 left-8 text-[#A9B695] text-sm rotate-[-20deg]">
+          ❧
+        </span>
+
+        {/* Fleurs */}
+        <span className="absolute top-1 left-4 text-[#E7B8C0] text-4xl">
+          ✿
+        </span>
+
+        <span className="absolute top-9 left-20 text-[#D79BA7] text-3xl">
+          ✿
+        </span>
+
+        <span className="absolute top-20 left-2 text-[#F0CDD2] text-2xl">
+          ✿
+        </span>
+
+        {/* Petits boutons floraux */}
+        <span className="absolute top-4 left-24 text-[#D6B477] text-xs">
+          ✦
+        </span>
+
+        <span className="absolute top-28 left-20 text-[#D6B477] text-xs">
+          ✦
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+/* =========================================================
+   COMPOSANT PRINCIPAL
+========================================================= */
 
 export default function Enveloppe({
   nomsMaries,
@@ -43,22 +143,16 @@ export default function Enveloppe({
   const [ouverte, setOuverte] = useState(false);
   const [animationTerminee, setAnimationTerminee] = useState(false);
 
-  /* =========================================================
-     FIN DE L'ANIMATION
-  ========================================================= */
   useEffect(() => {
     if (!ouverte) return;
 
     const timer = setTimeout(() => {
       setAnimationTerminee(true);
-    }, 1900);
+    }, 2200);
 
     return () => clearTimeout(timer);
   }, [ouverte]);
 
-  /* =========================================================
-     OUVERTURE
-  ========================================================= */
   function handleClick() {
     if (ouverte) return;
 
@@ -73,6 +167,7 @@ export default function Enveloppe({
       {/* =====================================================
           MUSIQUE
       ===================================================== */}
+
       <LecteurMusique
         url={musiqueUrl}
         demarrer={ouverte}
@@ -86,7 +181,7 @@ export default function Enveloppe({
               z-[9999]
               flex items-center justify-center
               overflow-hidden
-              bg-[#E9D8C8]
+              bg-[#F8EDEF]
               px-4
             "
             initial={{ opacity: 0 }}
@@ -95,13 +190,13 @@ export default function Enveloppe({
               opacity: 0,
               scale: 1.04,
               transition: {
-                duration: 0.8,
+                duration: 0.9,
                 ease: 'easeInOut',
               },
             }}
           >
             {/* =================================================
-                FOND LUXUEUX
+                FOND ROMANTIQUE
             ================================================= */}
 
             <div
@@ -109,14 +204,15 @@ export default function Enveloppe({
                 absolute inset-0
                 bg-[radial-gradient(
                   ellipse_at_center,
-                  #fffdf9_0%,
-                  #f7ece1_42%,
-                  #e2cbbb_100%
+                  #fffdfb_0%,
+                  #f9e9ed_48%,
+                  #efd4dc_100%
                 )]
               "
             />
 
-            {/* Lumière centrale animée */}
+            {/* Lumière centrale */}
+
             <motion.div
               className="
                 absolute
@@ -124,61 +220,39 @@ export default function Enveloppe({
                 top-1/2
                 -translate-x-1/2
                 -translate-y-1/2
-                w-[500px]
-                h-[500px]
+                w-[520px]
+                h-[520px]
                 rounded-full
-                bg-[#fffaf2]/70
+                bg-[#fffaff]/80
                 blur-[100px]
               "
               animate={{
                 scale: [1, 1.12, 1],
-                opacity: [0.5, 0.8, 0.5],
+                opacity: [0.5, 0.9, 0.5],
               }}
               transition={{
-                duration: 5,
+                duration: 6,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
             />
 
-            {/* Halo bordeaux */}
+            {/* Halos roses */}
+
             <motion.div
               className="
                 absolute
-                -left-32
-                bottom-[-100px]
-                w-[420px]
-                h-[420px]
+                -left-40
+                bottom-[-120px]
+                w-[450px]
+                h-[450px]
                 rounded-full
-                bg-[#7C3E4D]/10
+                bg-[#D99DAF]/20
                 blur-[100px]
               "
               animate={{
-                x: [0, 20, 0],
+                x: [0, 25, 0],
                 y: [0, -15, 0],
-              }}
-              transition={{
-                duration: 7,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-
-            {/* Halo doré */}
-            <motion.div
-              className="
-                absolute
-                -right-32
-                top-[-100px]
-                w-[420px]
-                h-[420px]
-                rounded-full
-                bg-[#B99155]/12
-                blur-[100px]
-              "
-              animate={{
-                x: [0, -20, 0],
-                y: [0, 15, 0],
               }}
               transition={{
                 duration: 8,
@@ -187,139 +261,96 @@ export default function Enveloppe({
               }}
             />
 
+            <motion.div
+              className="
+                absolute
+                -right-40
+                top-[-120px]
+                w-[450px]
+                h-[450px]
+                rounded-full
+                bg-[#D9B878]/15
+                blur-[100px]
+              "
+              animate={{
+                x: [0, -20, 0],
+                y: [0, 20, 0],
+              }}
+              transition={{
+                duration: 9,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
             {/* =================================================
-                ORNEMENTS AUX COINS
+                FLEURS DANS LES COINS
             ================================================= */}
 
-            <motion.div
-              className="
-                absolute
-                top-6
-                left-6
-                sm:top-10
-                sm:left-10
-                text-[#A77B49]/55
-                text-3xl
-                sm:text-4xl
-              "
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              ❦
-            </motion.div>
+            <BrancheFlorale
+              className="top-0 left-0 -translate-x-5 -translate-y-3"
+            />
 
-            <motion.div
-              className="
-                absolute
-                top-6
-                right-6
-                sm:top-10
-                sm:right-10
-                text-[#A77B49]/55
-                text-3xl
-                sm:text-4xl
-                -scale-x-100
-              "
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              ❦
-            </motion.div>
+            <BrancheFlorale
+              className="top-0 right-0 translate-x-5 -translate-y-3"
+              miroir
+            />
 
-            <motion.div
-              className="
-                absolute
-                bottom-6
-                left-6
-                sm:bottom-10
-                sm:left-10
-                text-[#A77B49]/55
-                text-3xl
-                sm:text-4xl
-                scale-y-[-1]
-              "
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6 }}
-            >
-              ❦
-            </motion.div>
+            <BrancheFlorale
+              className="bottom-0 left-0 -translate-x-5 translate-y-5"
+              miroir
+            />
 
-            <motion.div
-              className="
-                absolute
-                bottom-6
-                right-6
-                sm:bottom-10
-                sm:right-10
-                text-[#A77B49]/55
-                text-3xl
-                sm:text-4xl
-                -scale-x-100
-                scale-y-[-1]
-              "
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.7 }}
-            >
-              ❦
-            </motion.div>
+            <BrancheFlorale
+              className="bottom-0 right-0 translate-x-5 translate-y-5"
+            />
+
+            {/* Fleurs supplémentaires */}
+
+            <Fleur
+              className="top-[17%] left-[13%]"
+              taille="text-3xl"
+              rotation={-20}
+            />
+
+            <Fleur
+              className="top-[25%] right-[13%]"
+              taille="text-2xl"
+              rotation={20}
+            />
+
+            <Fleur
+              className="bottom-[23%] left-[12%]"
+              taille="text-2xl"
+              rotation={15}
+            />
+
+            <Fleur
+              className="bottom-[19%] right-[12%]"
+              taille="text-3xl"
+              rotation={-15}
+            />
 
             {/* =================================================
-                PARTICULES
+                PARTICULES DORÉES
             ================================================= */}
 
             {[
-              {
-                top: '18%',
-                left: '17%',
-                size: 'text-xs',
-              },
-              {
-                top: '25%',
-                right: '16%',
-                size: 'text-[9px]',
-              },
-              {
-                top: '44%',
-                left: '8%',
-                size: 'text-[8px]',
-              },
-              {
-                bottom: '23%',
-                left: '15%',
-                size: 'text-[10px]',
-              },
-              {
-                bottom: '18%',
-                right: '17%',
-                size: 'text-xs',
-              },
-              {
-                top: '52%',
-                right: '8%',
-                size: 'text-[7px]',
-              },
-              {
-                top: '12%',
-                right: '35%',
-                size: 'text-[7px]',
-              },
-              {
-                bottom: '13%',
-                left: '37%',
-                size: 'text-[7px]',
-              },
+              { top: '15%', left: '28%' },
+              { top: '20%', right: '28%' },
+              { top: '45%', left: '8%' },
+              { top: '51%', right: '8%' },
+              { bottom: '18%', left: '30%' },
+              { bottom: '15%', right: '30%' },
             ].map((item, index) => (
               <motion.span
                 key={index}
-                className={`
+                className="
                   absolute
-                  ${item.size}
-                  text-[#B58A50]
-                `}
+                  text-[#C8A15D]
+                  text-xs
+                  pointer-events-none
+                "
                 style={{
                   top: item.top,
                   left: item.left,
@@ -327,15 +358,15 @@ export default function Enveloppe({
                   bottom: item.bottom,
                 }}
                 animate={{
-                  opacity: [0.15, 0.85, 0.15],
-                  scale: [0.7, 1.25, 0.7],
+                  opacity: [0.2, 0.9, 0.2],
+                  scale: [0.7, 1.3, 0.7],
                   y: [0, -8, 0],
                 }}
                 transition={{
-                  duration: 2.8 + index * 0.3,
+                  duration: 3 + index * 0.4,
                   repeat: Infinity,
                   ease: 'easeInOut',
-                  delay: index * 0.35,
+                  delay: index * 0.4,
                 }}
               >
                 ✦
@@ -343,7 +374,7 @@ export default function Enveloppe({
             ))}
 
             {/* =================================================
-                ZONE CENTRALE
+                CONTENU CENTRAL
             ================================================= */}
 
             <div
@@ -358,61 +389,49 @@ export default function Enveloppe({
                 max-w-[620px]
               "
             >
-              {/* =================================================
-                  TEXTE SUPÉRIEUR
-              ================================================= */}
+              {/* Texte supérieur */}
 
               <motion.div
-                className="
-                  text-center
-                  mb-7
-                  sm:mb-9
-                "
-                initial={{
-                  opacity: 0,
-                  y: -20,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
+                className="text-center mb-8 sm:mb-10"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: 0.5,
-                  duration: 0.8,
+                  delay: 0.4,
+                  duration: 0.9,
                 }}
               >
                 <p
                   className="
                     uppercase
-                    tracking-[0.42em]
-                    text-[8px]
-                    sm:text-[9px]
-                    text-[#8D555C]
+                    tracking-[0.4em]
+                    text-[9px]
+                    sm:text-[10px]
+                    text-[#A66D7B]
                   "
                 >
-                  Le bonheur se partage
+                  Une histoire d'amour
                 </p>
 
                 <div className="flex items-center justify-center gap-3 mt-3">
-                  <div className="w-10 sm:w-14 h-px bg-[#B88A50]/60" />
+                  <div className="w-10 sm:w-14 h-px bg-[#C6A06A]/60" />
 
-                  <span className="text-[#B88A50] text-xs">
-                    ◆
+                  <span className="text-[#C6A06A] text-xs">
+                    ❦
                   </span>
 
-                  <div className="w-10 sm:w-14 h-px bg-[#B88A50]/60" />
+                  <div className="w-10 sm:w-14 h-px bg-[#C6A06A]/60" />
                 </div>
               </motion.div>
 
               {/* =================================================
-                  ENVELOPPE
+                  ENVELOPPE FLORALE
               ================================================= */}
 
               <motion.div
                 className="
                   relative
-                  w-[min(92vw,570px)]
-                  aspect-[1.58/1]
+                  w-[min(91vw,560px)]
+                  aspect-[1.5/1]
                   [perspective:1600px]
                 "
                 initial={{
@@ -427,133 +446,129 @@ export default function Enveloppe({
                 }}
                 transition={{
                   opacity: {
-                    duration: 0.8,
+                    duration: 0.9,
                   },
                   scale: {
-                    duration: 0.9,
+                    duration: 1,
                     ease: [0.22, 1, 0.36, 1],
                   },
                   y: {
-                    duration: 4,
+                    duration: 5,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   },
                 }}
               >
-                {/* =================================================
-                    OMBRE
-                ================================================= */}
+                {/* Ombre */}
 
                 <motion.div
                   className="
                     absolute
                     left-[8%]
                     right-[8%]
-                    bottom-[-30px]
-                    h-[35px]
+                    bottom-[-28px]
+                    h-[32px]
                     rounded-full
-                    bg-[#583B32]/20
+                    bg-[#8D5967]/20
                     blur-[18px]
                   "
                   animate={{
-                    scaleX: [1, 0.94, 1],
-                    opacity: [0.5, 0.35, 0.5],
+                    scaleX: [1, 0.93, 1],
+                    opacity: [0.5, 0.3, 0.5],
                   }}
                   transition={{
-                    duration: 4,
+                    duration: 5,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
                 />
 
-                {/* =================================================
-                    CORPS DE L'ENVELOPPE
-                ================================================= */}
+                {/* Corps de l'enveloppe */}
 
                 <div
                   className="
                     absolute
                     inset-0
                     overflow-hidden
-                    rounded-[4px]
+                    rounded-[8px]
                     border
-                    border-[#B98A50]
+                    border-[#D1B17B]/80
                     bg-gradient-to-br
-                    from-[#FFFDF9]
-                    via-[#F8EEE3]
-                    to-[#E3CBB7]
-                    shadow-[inset_0_0_35px_rgba(125,90,62,0.08)]
+                    from-[#FFFDFC]
+                    via-[#F9EDEF]
+                    to-[#EBCFD7]
+                    shadow-[0_25px_60px_rgba(133,78,96,0.2)]
                   "
                 >
-                  {/* Texture */}
+                  {/* Texture douce */}
+
                   <div
                     className="
-                      absolute
-                      inset-0
+                      absolute inset-0
                       bg-[radial-gradient(
                         circle_at_25%_20%,
                         rgba(255,255,255,0.95),
-                        transparent 30%
+                        transparent 35%
                       )]
                     "
                   />
 
-                  {/* Ligne gauche */}
-                  <div
-                    className="
-                      absolute
-                      left-[-15%]
-                      bottom-[-50%]
-                      w-[85%]
-                      h-[120%]
-                      rotate-[31deg]
-                      bg-[#F1E2D4]
-                      border-t
-                      border-[#C39D69]/25
-                    "
-                  />
+                  {/* Motifs floraux sur l'enveloppe */}
 
-                  {/* Ligne droite */}
-                  <div
-                    className="
-                      absolute
-                      right-[-15%]
-                      bottom-[-50%]
-                      w-[85%]
-                      h-[120%]
-                      -rotate-[31deg]
-                      bg-[#F0DFD0]
-                      border-t
-                      border-[#C39D69]/25
-                    "
-                  />
+                  <div className="absolute top-0 left-0 text-[#DCAAB6]/60 text-7xl -translate-x-5 -translate-y-5">
+                    ❀
+                  </div>
 
-                  {/* Poche basse */}
+                  <div className="absolute top-0 right-0 text-[#DCAAB6]/60 text-7xl translate-x-5 -translate-y-5">
+                    ❀
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 text-[#DCAAB6]/50 text-6xl -translate-x-4 translate-y-4">
+                    ❀
+                  </div>
+
+                  <div className="absolute bottom-0 right-0 text-[#DCAAB6]/50 text-6xl translate-x-4 translate-y-4">
+                    ❀
+                  </div>
+
+                  {/* Poche inférieure */}
+
                   <div
                     className="
                       absolute
                       inset-x-0
                       bottom-0
-                      h-[55%]
+                      h-[62%]
                       bg-gradient-to-b
-                      from-[#F7EADF]
-                      via-[#EEDBCA]
-                      to-[#DFC4AD]
-                      [clip-path:polygon(0_0,50%_55%,100%_0,100%_100%,0_100%)]
+                      from-[#F8E8EC]
+                      via-[#F2DCE3]
+                      to-[#E8C6D1]
+                      [clip-path:polygon(0_0,50%_54%,100%_0,100%_100%,0_100%)]
                     "
                   />
 
-                  {/* Ligne de la poche */}
+                  {/* Bordure florale centrale */}
+
                   <div
                     className="
                       absolute
                       left-0
                       right-0
-                      bottom-[54%]
+                      bottom-[50%]
                       h-px
-                      bg-[#B78C56]/25
+                      bg-[#C9A66F]/40
                     "
                   />
+
+                  {/* Petits ornements */}
+
+                  <span className="absolute left-[8%] top-[43%] text-[#C8A15D]/50 text-sm">
+                    ✦
+                  </span>
+
+                  <span className="absolute right-[8%] top-[43%] text-[#C8A15D]/50 text-sm">
+                    ✦
+                  </span>
                 </div>
 
                 {/* =================================================
@@ -567,54 +582,63 @@ export default function Enveloppe({
                     left-1/2
                     bottom-[8%]
                     -translate-x-1/2
-                    w-[59%]
-                    h-[74%]
-                    bg-[#FFFDF9]
+                    w-[60%]
+                    h-[75%]
+                    bg-[#FFFDFC]
                     border
-                    border-[#C5A06A]/60
-                    shadow-[0_15px_35px_rgba(72,47,36,0.18)]
+                    border-[#D5B77F]/70
+                    shadow-[0_15px_35px_rgba(91,57,69,0.16)]
                     flex
                     items-center
                     justify-center
                     overflow-hidden
                   "
-                  initial={{
-                    y: 0,
-                  }}
+                  initial={{ y: 0 }}
                   animate={{
                     y: ouverte ? -190 : 0,
                   }}
                   transition={{
-                    duration: 1.15,
+                    duration: 1.2,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
-                  {/* Cadre */}
+                  {/* Cadre intérieur */}
+
                   <div
                     className="
                       absolute
-                      inset-[7px]
+                      inset-[8px]
                       border
-                      border-[#C6A16D]/45
+                      border-[#D3B47B]/50
                     "
                   />
 
                   <div
                     className="
                       absolute
-                      inset-[12px]
+                      inset-[13px]
                       border
-                      border-[#C6A16D]/15
+                      border-[#D3B47B]/20
                     "
                   />
 
-                  <div className="relative z-10 text-center px-5">
+                  {/* Petit motif floral */}
+
+                  <span className="absolute top-3 left-4 text-[#D9AAB5]/60 text-xl">
+                    ❀
+                  </span>
+
+                  <span className="absolute bottom-3 right-4 text-[#D9AAB5]/60 text-xl">
+                    ❀
+                  </span>
+
+                  <div className="relative z-10 text-center px-4">
                     <p
                       className="
                         uppercase
-                        tracking-[0.38em]
+                        tracking-[0.35em]
                         text-[7px]
-                        text-[#9C7273]
+                        text-[#A77B85]
                       "
                     >
                       Invitation
@@ -626,7 +650,7 @@ export default function Enveloppe({
                         text-2xl
                         sm:text-3xl
                         italic
-                        text-[#583941]
+                        text-[#704653]
                         mt-3
                       "
                     >
@@ -634,17 +658,19 @@ export default function Enveloppe({
                     </div>
 
                     <div className="flex items-center justify-center gap-2 mt-3">
-                      <span className="w-5 h-px bg-[#C19A62]" />
-                      <span className="text-[#B6874C] text-[8px]">
+                      <span className="w-5 h-px bg-[#C6A06A]" />
+
+                      <span className="text-[#C6A06A] text-[10px]">
                         ❦
                       </span>
-                      <span className="w-5 h-px bg-[#C19A62]" />
+
+                      <span className="w-5 h-px bg-[#C6A06A]" />
                     </div>
                   </div>
                 </motion.div>
 
                 {/* =================================================
-                    RUBAN
+                    RUBAN VERTICAL ROSE
                 ================================================= */}
 
                 <motion.div
@@ -655,7 +681,7 @@ export default function Enveloppe({
                     bottom-0
                     left-1/2
                     -translate-x-1/2
-                    w-[48px]
+                    w-[42px]
                     pointer-events-none
                     overflow-hidden
                   "
@@ -664,46 +690,26 @@ export default function Enveloppe({
                   }}
                   transition={{
                     duration: 0.45,
-                    delay: 0.65,
+                    delay: 0.7,
                   }}
                 >
                   <div
                     className="
-                      absolute
-                      inset-0
+                      absolute inset-0
                       bg-gradient-to-r
-                      from-[#B28B5F]
-                      via-[#F2E2C8]
-                      via-50%
-                      to-[#B28B5F]
+                      from-[#C98E9D]
+                      via-[#F1D0D8]
+                      to-[#C98E9D]
                     "
                   />
 
-                  <div
-                    className="
-                      absolute
-                      left-0
-                      top-0
-                      bottom-0
-                      w-px
-                      bg-[#8F693E]/50
-                    "
-                  />
+                  <div className="absolute left-0 top-0 bottom-0 w-px bg-[#A96F7D]/40" />
 
-                  <div
-                    className="
-                      absolute
-                      right-0
-                      top-0
-                      bottom-0
-                      w-px
-                      bg-[#8F693E]/50
-                    "
-                  />
+                  <div className="absolute right-0 top-0 bottom-0 w-px bg-[#A96F7D]/40" />
                 </motion.div>
 
                 {/* =================================================
-                    RABAT SUPÉRIEUR
+                    RABAT SUPÉRIEUR FLORAL
                 ================================================= */}
 
                 <motion.div
@@ -713,56 +719,53 @@ export default function Enveloppe({
                     top-0
                     left-0
                     right-0
-                    h-[74%]
+                    h-[76%]
                     origin-top
                     [clip-path:polygon(0_0,100%_0,50%_76%)]
                     bg-gradient-to-b
-                    from-[#FFFDF9]
-                    via-[#F7EBE0]
-                    to-[#E6CDB7]
+                    from-[#FFFDFC]
+                    via-[#F9E9EE]
+                    to-[#EBCED8]
                     border-t
-                    border-[#B98B53]
+                    border-[#D1B17B]
                     [backface-visibility:hidden]
                   "
                   animate={{
                     rotateX: ouverte ? -175 : 0,
                   }}
                   transition={{
-                    duration: 1.1,
+                    duration: 1.15,
                     ease: [0.65, 0, 0.35, 1],
                   }}
                   style={{
                     transformStyle: 'preserve-3d',
                   }}
                 >
-                  {/* Cadre du rabat */}
+                  {/* Décoration florale du rabat */}
+
+                  <div className="absolute top-[10%] left-[8%] text-[#D8A5B1]/50 text-3xl">
+                    ❀
+                  </div>
+
+                  <div className="absolute top-[10%] right-[8%] text-[#D8A5B1]/50 text-3xl">
+                    ❀
+                  </div>
+
+                  {/* Ligne décorative */}
+
                   <div
                     className="
                       absolute
                       inset-[9px]
                       [clip-path:polygon(0_0,100%_0,50%_76%)]
                       border
-                      border-[#C29A63]/30
+                      border-[#CBA86E]/30
                     "
                   />
-
-                  {/* Petit motif */}
-                  <div
-                    className="
-                      absolute
-                      left-1/2
-                      top-[17%]
-                      -translate-x-1/2
-                      text-[#B88A50]/35
-                      text-sm
-                    "
-                  >
-                    ✦
-                  </div>
                 </motion.div>
 
                 {/* =================================================
-                    SCEAU
+                    SCEAU FLORAL CENTRAL
                 ================================================= */}
 
                 <motion.button
@@ -778,8 +781,8 @@ export default function Enveloppe({
                     -translate-y-1/2
                     w-[116px]
                     h-[116px]
-                    sm:w-[126px]
-                    sm:h-[126px]
+                    sm:w-[128px]
+                    sm:h-[128px]
                     rounded-full
                     flex
                     items-center
@@ -787,15 +790,15 @@ export default function Enveloppe({
                     cursor-pointer
                     outline-none
                     bg-gradient-to-br
-                    from-[#A85D69]
-                    via-[#7C3949]
-                    to-[#4B202D]
-                    shadow-[0_18px_38px_rgba(65,29,38,0.4)]
+                    from-[#E9BFC8]
+                    via-[#C98C9D]
+                    to-[#A96578]
+                    shadow-[0_18px_38px_rgba(123,62,82,0.3)]
                   "
                   animate={
                     ouverte
                       ? {
-                          scale: 1.15,
+                          scale: 1.18,
                           y: -5,
                           opacity: 0,
                         }
@@ -815,106 +818,82 @@ export default function Enveloppe({
                   whileTap={
                     !ouverte
                       ? {
-                          scale: 0.91,
+                          scale: 0.92,
                         }
                       : undefined
                   }
                   transition={
                     ouverte
                       ? {
-                          duration: 0.65,
+                          duration: 0.7,
                           ease: 'easeOut',
                         }
                       : {
                           y: {
-                            duration: 3,
+                            duration: 3.5,
                             repeat: Infinity,
                             ease: 'easeInOut',
                           },
                           scale: {
-                            duration: 3,
+                            duration: 3.5,
                             repeat: Infinity,
                             ease: 'easeInOut',
                           },
                         }
                   }
                 >
-                  {/* Cercle doré */}
+                  {/* Bordures dorées */}
+
                   <div
                     className="
                       absolute
                       inset-[5px]
                       rounded-full
                       border
-                      border-[#EACB85]/90
+                      border-[#F5DDA4]/90
                     "
                   />
 
-                  {/* Deuxième cercle */}
                   <div
                     className="
                       absolute
                       inset-[11px]
                       rounded-full
                       border
-                      border-[#E7C47D]/40
+                      border-[#F5DDA4]/50
                     "
                   />
 
-                  {/* Relief */}
-                  <div
-                    className="
-                      absolute
-                      inset-[19px]
-                      rounded-full
-                      border
-                      border-[#E7C47D]/20
-                    "
-                  />
+                  {/* Fleur centrale */}
+
+                  <span className="absolute top-[14px] text-[#F9DFE4] text-xl">
+                    ✿
+                  </span>
+
+                  <span className="absolute bottom-[13px] text-[#F9DFE4] text-xl">
+                    ✿
+                  </span>
 
                   {/* Initiales */}
+
                   <span
                     className="
                       relative
                       z-10
                       font-serif
-                      text-[31px]
-                      sm:text-[34px]
+                      text-[28px]
+                      sm:text-[32px]
                       tracking-wide
-                      text-[#F4D99A]
-                      drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)]
+                      text-[#FFF0D1]
+                      drop-shadow-[0_2px_3px_rgba(90,45,60,0.35)]
                     "
                   >
                     {initiales}
                   </span>
-
-                  {/* Ornement haut */}
-                  <span
-                    className="
-                      absolute
-                      top-[22px]
-                      text-[#E7C47D]
-                      text-[10px]
-                    "
-                  >
-                    ❦
-                  </span>
-
-                  {/* Ornement bas */}
-                  <span
-                    className="
-                      absolute
-                      bottom-[21px]
-                      text-[#E7C47D]
-                      text-[10px]
-                    "
-                  >
-                    ❦
-                  </span>
                 </motion.button>
 
                 {/* =================================================
-                    PETIT BADGE OUVERTURE
+                    INDICATION D'OUVERTURE
                 ================================================= */}
 
                 <motion.div
@@ -944,54 +923,47 @@ export default function Enveloppe({
                       italic
                       text-[19px]
                       sm:text-[21px]
-                      text-[#573A40]
+                      text-[#754957]
                     "
                   >
-                    Touchez le sceau
+                    Ouvrez votre invitation
                   </p>
 
                   <p
                     className="
                       mt-1.5
                       uppercase
-                      tracking-[0.3em]
+                      tracking-[0.28em]
                       text-[7px]
                       sm:text-[8px]
-                      text-[#987773]
+                      text-[#A77B85]
                     "
                   >
-                    pour ouvrir votre invitation
+                    Touchez le sceau floral
                   </p>
                 </motion.div>
               </motion.div>
 
               {/* =================================================
-                  SIGNATURE SOUS L'ENVELOPPE
+                  SIGNATURE
               ================================================= */}
 
               <motion.div
-                className="
-                  mt-24
-                  text-center
-                "
-                initial={{
-                  opacity: 0,
-                }}
-                animate={{
-                  opacity: 1,
-                }}
+                className="mt-24 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{
-                  delay: 1.1,
+                  delay: 1.2,
                 }}
               >
                 <div className="flex items-center justify-center gap-3">
-                  <div className="w-8 sm:w-12 h-px bg-[#C19A63]/60" />
+                  <div className="w-8 sm:w-12 h-px bg-[#C6A06A]/60" />
 
-                  <span className="text-[#B6874C] text-xs">
-                    ✦
+                  <span className="text-[#C6A06A] text-xs">
+                    ❦
                   </span>
 
-                  <div className="w-8 sm:w-12 h-px bg-[#C19A63]/60" />
+                  <div className="w-8 sm:w-12 h-px bg-[#C6A06A]/60" />
                 </div>
 
                 <p
@@ -1000,7 +972,7 @@ export default function Enveloppe({
                     uppercase
                     tracking-[0.28em]
                     text-[7px]
-                    text-[#A48B82]
+                    text-[#A77B85]
                   "
                 >
                   Avec toute notre affection
@@ -1009,7 +981,7 @@ export default function Enveloppe({
             </div>
 
             {/* =================================================
-                FLASH LORS DE L'OUVERTURE
+                FLASH D'OUVERTURE
             ================================================= */}
 
             <AnimatePresence>
@@ -1020,16 +992,12 @@ export default function Enveloppe({
                     inset-0
                     z-[9998]
                     pointer-events-none
-                    bg-[#FFF9ED]
+                    bg-[#FFF9FC]
                   "
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: [0, 0.65, 0],
-                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 0.7, 0] }}
                   transition={{
-                    duration: 1.1,
+                    duration: 1.2,
                     times: [0, 0.3, 1],
                     ease: 'easeOut',
                   }}
