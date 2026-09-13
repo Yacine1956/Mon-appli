@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -39,75 +38,198 @@ export default function Countdown({ dateMariage }) {
     {
       label: 'Jours',
       value: restant.jours,
+      symbole: '✦',
     },
     {
       label: 'Heures',
       value: restant.heures,
+      symbole: '☾',
     },
     {
       label: 'Minutes',
       value: restant.minutes,
+      symbole: '✧',
     },
     {
       label: 'Secondes',
       value: restant.secondes,
+      symbole: '♡',
     },
   ];
 
+  const etoiles = [
+    { left: '7%', top: '16%', delay: 0 },
+    { left: '16%', top: '72%', delay: 1.2 },
+    { left: '27%', top: '10%', delay: 2 },
+    { left: '73%', top: '14%', delay: 0.8 },
+    { left: '87%', top: '30%', delay: 1.8 },
+    { left: '93%', top: '72%', delay: 2.5 },
+    { left: '63%', top: '88%', delay: 1.4 },
+    { left: '36%', top: '92%', delay: 2.2 },
+  ];
+
   return (
-    <section className="relative py-16 px-5 overflow-hidden">
+    <section className="relative overflow-hidden bg-[#080B20] py-16 md:py-20 px-5">
 
       {/* =====================================================
-          HALOS DÉCORATIFS
+          AMBIANCE DE FOND
       ====================================================== */}
 
-      <motion.div
-        className="
-          absolute
-          left-1/2
-          top-1/2
-          -translate-x-1/2
-          -translate-y-1/2
-          w-80
-          h-80
-          rounded-full
-          bg-amber-100/30
-          blur-3xl
-          pointer-events-none
-        "
-        animate={{
-          scale: [1, 1.15, 1],
-          opacity: [0.25, 0.4, 0.25],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
+      <div className="absolute inset-0 pointer-events-none">
 
-      <motion.div
-        className="
+        {/* Halo central */}
+        <motion.div
+          className="
+            absolute
+            left-1/2
+            top-1/2
+            -translate-x-1/2
+            -translate-y-1/2
+            w-[420px]
+            h-[420px]
+            rounded-full
+            bg-[#422A4D]/25
+            blur-[100px]
+          "
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.3, 0.55, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Halo rose */}
+        <motion.div
+          className="
+            absolute
+            -left-32
+            top-1/3
+            w-72
+            h-72
+            rounded-full
+            bg-[#C58FA5]/10
+            blur-[100px]
+          "
+          animate={{
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Halo champagne */}
+        <motion.div
+          className="
+            absolute
+            -right-32
+            bottom-0
+            w-80
+            h-80
+            rounded-full
+            bg-[#DCC79A]/10
+            blur-[110px]
+          "
+          animate={{
+            x: [0, -40, 0],
+            scale: [1, 0.9, 1],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Étoiles */}
+        {etoiles.map((etoile, index) => (
+          <motion.span
+            key={index}
+            className="
+              absolute
+              text-[#DCC79A]/60
+              text-[9px]
+            "
+            style={{
+              left: etoile.left,
+              top: etoile.top,
+            }}
+            animate={{
+              opacity: [0.15, 1, 0.15],
+              scale: [0.7, 1.25, 0.7],
+            }}
+            transition={{
+              duration: 3 + index * 0.3,
+              delay: etoile.delay,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            ✦
+          </motion.span>
+        ))}
+
+        {/* Petits points lumineux */}
+        {[1, 2, 3, 4].map((item) => (
+          <motion.span
+            key={item}
+            className="
+              absolute
+              w-1
+              h-1
+              rounded-full
+              bg-[#C58FA5]/50
+            "
+            style={{
+              left: `${15 + item * 18}%`,
+              top: `${25 + (item % 2) * 45}%`,
+            }}
+            animate={{
+              y: [0, -12, 0],
+              opacity: [0.2, 0.8, 0.2],
+            }}
+            transition={{
+              duration: 4 + item,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
+
+        {/* Ligne supérieure */}
+        <div className="
           absolute
-          -left-20
-          top-1/2
-          w-48
-          h-48
-          rounded-full
-          bg-rose-100/20
-          blur-3xl
-          pointer-events-none
-        "
-        animate={{
-          x: [0, 50, 0],
-          y: [0, -30, 0],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      />
+          top-0
+          left-0
+          right-0
+          h-px
+          bg-gradient-to-r
+          from-transparent
+          via-[#DCC79A]/30
+          to-transparent
+        " />
+
+        {/* Ligne inférieure */}
+        <div className="
+          absolute
+          bottom-0
+          left-0
+          right-0
+          h-px
+          bg-gradient-to-r
+          from-transparent
+          via-[#C58FA5]/20
+          to-transparent
+        " />
+
+      </div>
 
       {/* =====================================================
           CONTENU
@@ -120,10 +242,10 @@ export default function Countdown({ dateMariage }) {
         ================================================== */}
 
         <motion.div
-          className="text-center mb-12"
+          className="text-center mb-11"
           initial={{
             opacity: 0,
-            y: 35,
+            y: 30,
           }}
           whileInView={{
             opacity: 1,
@@ -131,59 +253,82 @@ export default function Countdown({ dateMariage }) {
           }}
           viewport={{
             once: true,
+            amount: 0.3,
           }}
           transition={{
             duration: 0.9,
           }}
         >
 
-          {/* décoration */}
+          {/* Ornement */}
           <div className="
             flex
             items-center
             justify-center
             gap-4
-            mb-6
+            mb-5
           ">
 
             <motion.span
-              className="h-px bg-amber-300"
               initial={{ width: 0 }}
               whileInView={{ width: 55 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              transition={{
+                duration: 0.7,
+              }}
+              className="
+                h-px
+                bg-gradient-to-r
+                from-transparent
+                to-[#DCC79A]/70
+              "
             />
 
             <motion.span
-              className="text-amber-500 text-xl"
+              className="text-[#DCC79A] text-sm"
               animate={{
                 rotate: [0, 180, 360],
+                scale: [1, 1.15, 1],
               }}
               transition={{
-                duration: 8,
-                repeat: Infinity,
-                ease: 'linear',
+                rotate: {
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: 'linear',
+                },
+                scale: {
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                },
               }}
             >
               ✦
             </motion.span>
 
             <motion.span
-              className="h-px bg-amber-300"
               initial={{ width: 0 }}
               whileInView={{ width: 55 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              transition={{
+                duration: 0.7,
+              }}
+              className="
+                h-px
+                bg-gradient-to-l
+                from-transparent
+                to-[#DCC79A]/70
+              "
             />
 
           </div>
 
           <p className="
             uppercase
-            tracking-[0.45em]
+            tracking-[0.42em]
             text-[10px]
-            text-amber-600
-            mb-4
+            text-[#DCC79A]
+            mb-3
           ">
             Le grand jour approche
           </p>
@@ -192,7 +337,7 @@ export default function Countdown({ dateMariage }) {
             font-serif
             text-3xl
             md:text-5xl
-            text-gray-800
+            text-[#FBF7F1]
             font-light
           ">
             Plus que quelques instants...
@@ -202,19 +347,26 @@ export default function Countdown({ dateMariage }) {
             className="
               mt-4
               text-sm
-              text-gray-500
+              text-[#D8D3DD]/65
               italic
             "
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
+            initial={{
+              opacity: 0,
+            }}
+            whileInView={{
+              opacity: 1,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              delay: 0.3,
+            }}
           >
             Avant de célébrer notre amour avec vous
           </motion.p>
 
         </motion.div>
-
 
         {/* =================================================
             COMPTE À REBOURS
@@ -224,8 +376,8 @@ export default function Countdown({ dateMariage }) {
           grid
           grid-cols-2
           md:grid-cols-4
-          gap-4
-          md:gap-6
+          gap-3
+          md:gap-5
           max-w-3xl
           mx-auto
         ">
@@ -237,7 +389,7 @@ export default function Countdown({ dateMariage }) {
               className="relative"
               initial={{
                 opacity: 0,
-                y: 50,
+                y: 45,
                 scale: 0.85,
               }}
               whileInView={{
@@ -261,13 +413,19 @@ export default function Countdown({ dateMariage }) {
               <motion.div
                 className="
                   absolute
-                  inset-3
-                  rounded-[2rem]
-                  bg-amber-200/30
+                  -inset-2
+                  rounded-[1.7rem]
+                  bg-[#C58FA5]/15
                   blur-xl
-                  opacity-0
-                  group-hover:opacity-100
                 "
+                animate={{
+                  opacity: [0.25, 0.55, 0.25],
+                }}
+                transition={{
+                  duration: 4 + index,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
               />
 
               {/* Carte */}
@@ -275,29 +433,32 @@ export default function Countdown({ dateMariage }) {
                 className="
                   group
                   relative
-                  bg-white/80
-                  backdrop-blur-sm
-                  border
-                  border-white
-                  rounded-[2rem]
-                  px-4
-                  py-7
-                  md:py-9
-                  shadow-[0_15px_45px_rgba(0,0,0,0.07)]
                   overflow-hidden
+                  rounded-[1.5rem]
+                  bg-gradient-to-br
+                  from-[#181C3C]
+                  via-[#11152F]
+                  to-[#0C1028]
+                  border
+                  border-[#DCC79A]/20
+                  px-3
+                  py-6
+                  md:py-8
+                  shadow-[0_20px_60px_rgba(0,0,0,0.35)]
                 "
                 whileHover={{
-                  y: -8,
+                  y: -7,
                   scale: 1.03,
+                  borderColor: 'rgba(220,199,154,0.5)',
                   boxShadow:
-                    '0 25px 55px rgba(0,0,0,0.11)',
+                    '0 25px 70px rgba(0,0,0,0.5)',
                 }}
                 transition={{
                   duration: 0.35,
                 }}
               >
 
-                {/* reflet */}
+                {/* Reflet */}
                 <motion.div
                   className="
                     absolute
@@ -307,7 +468,7 @@ export default function Countdown({ dateMariage }) {
                     h-full
                     bg-gradient-to-r
                     from-transparent
-                    via-white/50
+                    via-white/10
                     to-transparent
                     skew-x-[-20deg]
                     pointer-events-none
@@ -323,16 +484,18 @@ export default function Countdown({ dateMariage }) {
                   }}
                 />
 
-                {/* petit symbole */}
+                {/* Petit symbole */}
                 <motion.div
                   className="
                     mx-auto
                     mb-4
-                    w-7
-                    h-7
+                    w-8
+                    h-8
                     rounded-full
-                    bg-amber-50
-                    text-amber-500
+                    bg-[#DCC79A]/10
+                    border
+                    border-[#DCC79A]/20
+                    text-[#DCC79A]
                     flex
                     items-center
                     justify-center
@@ -340,17 +503,18 @@ export default function Countdown({ dateMariage }) {
                   "
                   animate={{
                     rotate: [0, 10, -10, 0],
+                    y: [0, -2, 0],
                   }}
                   transition={{
                     duration: 4,
                     repeat: Infinity,
+                    ease: 'easeInOut',
                   }}
                 >
-                  ✦
+                  {u.symbole}
                 </motion.div>
 
-
-                {/* CHIFFRE */}
+                {/* Chiffre */}
                 <div className="
                   relative
                   h-14
@@ -369,7 +533,7 @@ export default function Countdown({ dateMariage }) {
                         font-serif
                         text-4xl
                         md:text-5xl
-                        text-gray-800
+                        text-[#FBF7F1]
                         font-light
                         tabular-nums
                       "
@@ -377,16 +541,19 @@ export default function Countdown({ dateMariage }) {
                         opacity: 0,
                         y: -18,
                         scale: 0.8,
+                        filter: 'blur(5px)',
                       }}
                       animate={{
                         opacity: 1,
                         y: 0,
                         scale: 1,
+                        filter: 'blur(0px)',
                       }}
                       exit={{
                         opacity: 0,
                         y: 18,
                         scale: 0.8,
+                        filter: 'blur(5px)',
                       }}
                       transition={{
                         duration: 0.3,
@@ -399,12 +566,14 @@ export default function Countdown({ dateMariage }) {
 
                 </div>
 
-
-                {/* Ligne */}
+                {/* Ligne champagne */}
                 <div className="
-                  w-8
+                  w-9
                   h-px
-                  bg-amber-300
+                  bg-gradient-to-r
+                  from-transparent
+                  via-[#DCC79A]
+                  to-transparent
                   mx-auto
                   my-4
                 " />
@@ -412,9 +581,9 @@ export default function Countdown({ dateMariage }) {
                 {/* Label */}
                 <p className="
                   uppercase
-                  tracking-[0.3em]
+                  tracking-[0.28em]
                   text-[9px]
-                  text-gray-500
+                  text-[#D8D3DD]/55
                 ">
                   {u.label}
                 </p>
@@ -427,9 +596,8 @@ export default function Countdown({ dateMariage }) {
 
         </div>
 
-
         {/* =================================================
-            COEUR
+            SIGNATURE
         ================================================== */}
 
         <motion.div
@@ -438,7 +606,7 @@ export default function Countdown({ dateMariage }) {
             items-center
             justify-center
             gap-4
-            mt-12
+            mt-11
           "
           initial={{
             opacity: 0,
@@ -458,27 +626,37 @@ export default function Countdown({ dateMariage }) {
             h-px
             w-14
             md:w-20
-            bg-gray-200
+            bg-gradient-to-r
+            from-transparent
+            to-[#DCC79A]/40
           " />
 
           <motion.div
             className="
-              w-10
-              h-10
+              relative
+              w-11
+              h-11
               rounded-full
-              bg-white
-              shadow-md
+              bg-[#11152F]
+              border
+              border-[#DCC79A]/25
               flex
               items-center
               justify-center
-              text-amber-500
+              text-[#C58FA5]
               text-sm
+              shadow-[0_10px_30px_rgba(0,0,0,0.3)]
             "
             animate={{
-              scale: [1, 1.15, 1],
+              scale: [1, 1.12, 1],
+              boxShadow: [
+                '0 10px 30px rgba(0,0,0,0.3)',
+                '0 10px 40px rgba(197,143,165,0.18)',
+                '0 10px 30px rgba(0,0,0,0.3)',
+              ],
             }}
             transition={{
-              duration: 1.8,
+              duration: 2.2,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
@@ -490,13 +668,39 @@ export default function Countdown({ dateMariage }) {
             h-px
             w-14
             md:w-20
-            bg-gray-200
+            bg-gradient-to-l
+            from-transparent
+            to-[#DCC79A]/40
           " />
 
         </motion.div>
+
+        <motion.p
+          className="
+            mt-4
+            text-center
+            text-[9px]
+            uppercase
+            tracking-[0.28em]
+            text-[#FBF7F1]/30
+          "
+          initial={{
+            opacity: 0,
+          }}
+          whileInView={{
+            opacity: 1,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            delay: 1,
+          }}
+        >
+          Chaque seconde nous rapproche de ce moment
+        </motion.p>
 
       </div>
     </section>
   );
 }
-

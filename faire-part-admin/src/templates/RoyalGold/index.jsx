@@ -6,19 +6,22 @@ import GoogleMap from '../shared/GoogleMap';
 import PartageBoutons from '../shared/PartageBoutons';
 
 /* =========================================================
-   PALETTE
+   PALETTE — NUIT ROMANTIQUE
 ========================================================= */
 
 const COLORS = {
-  burgundy: '#4A1824',
-  burgundyLight: '#6B2635',
-  burgundyDark: '#321019',
-  gold: '#D6B36A',
-  goldLight: '#E7CB91',
-  ivory: '#FBF5EA',
-  cream: '#F4EBDD',
-  rose: '#B98282',
-  text: '#4B3434',
+  night: '#11152F',
+  nightDeep: '#080B20',
+  nightSoft: '#1C2145',
+  plum: '#422A4D',
+  rose: '#C58FA5',
+  roseLight: '#E4B9C7',
+  champagne: '#DCC79A',
+  champagneLight: '#F1E5C5',
+  ivory: '#FBF7F1',
+  cream: '#F3EAE2',
+  text: '#3B3040',
+  muted: '#786D78',
 };
 
 /* =========================================================
@@ -28,13 +31,13 @@ const COLORS = {
 const fadeUp = {
   hidden: {
     opacity: 0,
-    y: 35,
+    y: 45,
   },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8,
+      duration: 1,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -43,13 +46,13 @@ const fadeUp = {
 const fadeLeft = {
   hidden: {
     opacity: 0,
-    x: -40,
+    x: -50,
   },
   visible: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.9,
+      duration: 1,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -58,13 +61,13 @@ const fadeLeft = {
 const fadeRight = {
   hidden: {
     opacity: 0,
-    x: 40,
+    x: 50,
   },
   visible: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.9,
+      duration: 1,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -73,13 +76,13 @@ const fadeRight = {
 const scaleIn = {
   hidden: {
     opacity: 0,
-    scale: 0.88,
+    scale: 0.85,
   },
   visible: {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 1,
+      duration: 1.1,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -89,170 +92,492 @@ const stagger = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
+      staggerChildren: 0.15,
     },
   },
 };
 
 /* =========================================================
-   ORNEMENT DORÉ
+   STYLE GLOBAL — ANIMATIONS CSS
 ========================================================= */
 
-function GoldOrnament({ light = false }) {
+const ambientStyles = `
+  @keyframes starTwinkle {
+    0%, 100% {
+      opacity: .25;
+      transform: scale(.7);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.25);
+    }
+  }
+
+  @keyframes starFloat {
+    0%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(10px, -18px, 0);
+    }
+  }
+
+  @keyframes softGlow {
+    0%, 100% {
+      opacity: .25;
+      transform: scale(1);
+    }
+    50% {
+      opacity: .55;
+      transform: scale(1.12);
+    }
+  }
+
+  @keyframes moonGlow {
+    0%, 100% {
+      box-shadow:
+        0 0 20px rgba(220,199,154,.12),
+        0 0 50px rgba(220,199,154,.08);
+    }
+    50% {
+      box-shadow:
+        0 0 35px rgba(220,199,154,.28),
+        0 0 90px rgba(220,199,154,.14);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(120%);
+    }
+  }
+
+  @keyframes petalFall {
+    0% {
+      transform:
+        translate3d(0, -12vh, 0)
+        rotate(0deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: .85;
+    }
+
+    50% {
+      transform:
+        translate3d(35px, 50vh, 0)
+        rotate(150deg);
+    }
+
+    100% {
+      transform:
+        translate3d(-25px, 115vh, 0)
+        rotate(320deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes rotateSlow {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulseRing {
+    0% {
+      transform: scale(.92);
+      opacity: .15;
+    }
+
+    50% {
+      transform: scale(1.04);
+      opacity: .35;
+    }
+
+    100% {
+      transform: scale(.92);
+      opacity: .15;
+    }
+  }
+
+  @keyframes sway {
+    0%, 100% {
+      transform: rotate(-4deg);
+    }
+
+    50% {
+      transform: rotate(5deg);
+    }
+  }
+
+  @keyframes floatUp {
+    0%, 100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes lineReveal {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  .romantic-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .romantic-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 35%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.18),
+      transparent
+    );
+    transform: translateX(-120%);
+    animation: shimmer 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+`;
+
+/* =========================================================
+   ETOILE
+========================================================= */
+
+function Star({
+  top,
+  left,
+  size = 3,
+  delay = 0,
+  duration = 3,
+  opacity = 0.7,
+}) {
   return (
-    <div className="flex items-center justify-center gap-3">
-      <span
-        className={`w-16 md:w-24 h-px ${
-          light
-            ? 'bg-gradient-to-r from-transparent to-[#D6B36A]'
-            : 'bg-gradient-to-r from-transparent to-[#B98C4D]'
-        }`}
+    <span
+      className="absolute rounded-full"
+      style={{
+        top,
+        left,
+        width: size,
+        height: size,
+        background: COLORS.champagneLight,
+        opacity,
+        animation: `starTwinkle ${duration}s ease-in-out ${delay}s infinite`,
+        boxShadow: `0 0 ${size * 4}px rgba(241,229,197,.65)`,
+      }}
+    />
+  );
+}
+
+/* =========================================================
+   CIEL ETOILE
+========================================================= */
+
+function StarField({ dense = false }) {
+  const stars = dense
+    ? [
+        [7, 8, 2, 0.2],
+        [14, 25, 3, 1],
+        [9, 45, 2, 1.8],
+        [18, 65, 2, 0.5],
+        [11, 82, 3, 2],
+        [27, 92, 2, 1.2],
+        [31, 14, 2, 2.2],
+        [35, 37, 3, 0.8],
+        [29, 57, 2, 1.5],
+        [40, 74, 2, 2.7],
+        [43, 6, 3, 1],
+        [47, 28, 2, 2],
+        [50, 51, 3, 0.4],
+        [54, 88, 2, 1.6],
+        [60, 18, 2, 2.3],
+        [63, 42, 3, 0.6],
+        [67, 67, 2, 1.8],
+        [72, 94, 3, 0.9],
+        [77, 13, 2, 2.4],
+        [81, 35, 3, 1.3],
+        [84, 59, 2, 0.3],
+        [89, 78, 3, 2],
+        [93, 24, 2, 1.5],
+        [95, 48, 2, 2.6],
+        [88, 7, 2, 0.7],
+      ]
+    : [
+        [10, 12, 3, 0.2],
+        [18, 30, 2, 1],
+        [13, 68, 3, 1.8],
+        [25, 86, 2, 0.5],
+        [32, 18, 2, 1.2],
+        [37, 45, 3, 2],
+        [45, 76, 2, 0.7],
+        [54, 9, 2, 1.4],
+        [62, 33, 3, 0.4],
+        [69, 62, 2, 2],
+        [76, 88, 3, 1],
+        [84, 22, 2, 1.7],
+        [91, 53, 2, 2.3],
+      ];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {stars.map(([top, left, size, delay], index) => (
+        <Star
+          key={index}
+          top={`${top}%`}
+          left={`${left}%`}
+          size={size}
+          delay={delay}
+          duration={2.8 + (index % 4) * 0.6}
+          opacity={0.35 + (index % 3) * 0.2}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* =========================================================
+   PETITES ETOILES EN FORME DE CROIX
+========================================================= */
+
+function Sparkle({ top, left, delay = 0, scale = 1 }) {
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{
+        top,
+        left,
+        transform: `scale(${scale})`,
+        animation: `starFloat 5s ease-in-out ${delay}s infinite`,
+      }}
+    >
+      <div
+        className="absolute"
+        style={{
+          width: 2,
+          height: 18,
+          left: 7,
+          top: 0,
+          borderRadius: 999,
+          background: COLORS.champagneLight,
+          boxShadow: `0 0 12px ${COLORS.champagneLight}`,
+        }}
       />
 
-      <motion.span
-        animate={{
-          rotate: [0, 45, 90, 135, 180, 225, 270, 315, 360],
-          scale: [1, 1.12, 1],
+      <div
+        className="absolute"
+        style={{
+          width: 18,
+          height: 2,
+          left: 0,
+          top: 8,
+          borderRadius: 999,
+          background: COLORS.champagneLight,
+          boxShadow: `0 0 12px ${COLORS.champagneLight}`,
         }}
-        transition={{
-          rotate: {
-            duration: 12,
-            repeat: Infinity,
-            ease: 'linear',
-          },
-          scale: {
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          },
-        }}
-        className={`text-sm ${
-          light ? 'text-[#E7CB91]' : 'text-[#B98C4D]'
-        }`}
-      >
-        ✦
-      </motion.span>
-
-      <span
-        className={`w-16 md:w-24 h-px ${
-          light
-            ? 'bg-gradient-to-l from-transparent to-[#D6B36A]'
-            : 'bg-gradient-to-l from-transparent to-[#B98C4D]'
-        }`}
       />
     </div>
   );
 }
 
 /* =========================================================
-   FLEURS DÉCORATIVES
+   PETALES
 ========================================================= */
 
-function Flower({ className = '' }) {
-  return (
-    <motion.div
-      animate={{
-        rotate: [-3, 3, -3],
-        scale: [1, 1.03, 1],
-      }}
-      transition={{
-        duration: 7,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-      className={`absolute pointer-events-none ${className}`}
-    >
-      <div className="relative w-28 h-28">
-
-        <span className="absolute left-10 top-2 w-10 h-16 rounded-full bg-[#8B3C4B]/55 rotate-[35deg]" />
-
-        <span className="absolute left-4 top-8 w-10 h-16 rounded-full bg-[#A65463]/45 -rotate-[35deg]" />
-
-        <span className="absolute left-12 top-11 w-10 h-16 rounded-full bg-[#762D3C]/55 rotate-[80deg]" />
-
-        <span className="absolute left-1 top-11 w-10 h-16 rounded-full bg-[#B66D78]/35 -rotate-[75deg]" />
-
-        <span className="absolute left-10 top-10 w-8 h-8 rounded-full bg-[#D6B36A]" />
-
-        <span className="absolute left-12 top-12 w-4 h-4 rounded-full bg-[#F0D69D]" />
-
-        <span className="absolute left-20 top-17 w-9 h-3 rounded-full bg-[#69704D]/50 rotate-[35deg]" />
-
-        <span className="absolute left-8 top-23 w-9 h-3 rounded-full bg-[#69704D]/45 -rotate-[25deg]" />
-
-        <span className="absolute left-14 top-20 w-16 h-px bg-[#69704D]/50 rotate-[20deg]" />
-      </div>
-    </motion.div>
-  );
-}
-
-/* =========================================================
-   PETITES ÉTOILES
-========================================================= */
-
-function GoldenParticles() {
-  const items = [
-    ['8%', '18%'],
-    ['16%', '72%'],
-    ['87%', '17%'],
-    ['91%', '63%'],
-    ['43%', '11%'],
-    ['71%', '83%'],
-    ['57%', '92%'],
-    ['27%', '35%'],
+function Petals({ count = 12, dark = false }) {
+  const petals = [
+    [5, 0, 7, 8, 0],
+    [13, 1, 6, 10, 1.2],
+    [21, 0, 8, 9, 2],
+    [32, 1, 6, 11, 0.7],
+    [43, 0, 7, 8, 1.8],
+    [54, 1, 6, 10, 0.3],
+    [65, 0, 8, 9, 2.4],
+    [76, 1, 6, 11, 1.1],
+    [88, 0, 7, 8, 2.8],
+    [96, 1, 6, 10, 1.5],
+    [27, 0, 5, 12, 3],
+    [70, 1, 5, 12, 3.4],
   ];
 
   return (
-    <>
-      {items.map(([left, top], index) => (
-        <motion.span
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {petals.slice(0, count).map(([left, delay, size, duration, offset], index) => (
+        <span
           key={index}
-          className="absolute text-[#D6B36A]/50 text-[9px] pointer-events-none"
-          style={{ left, top }}
-          animate={{
-            y: [0, -12, 0],
-            opacity: [0.2, 0.8, 0.2],
-            rotate: [0, 90, 180],
+          className="absolute rounded-full"
+          style={{
+            left: `${left}%`,
+            top: '-30px',
+            width: `${size}px`,
+            height: `${size * 1.55}px`,
+            background: dark
+              ? index % 3 === 0
+                ? 'rgba(228,185,199,.65)'
+                : 'rgba(220,199,154,.5)'
+              : index % 3 === 0
+                ? 'rgba(197,143,165,.42)'
+                : 'rgba(220,199,154,.3)',
+            borderRadius: '70% 30% 70% 30%',
+            filter: 'blur(.1px)',
+            animation: `petalFall ${duration}s linear ${delay + offset}s infinite`,
           }}
-          transition={{
-            duration: 4 + index * 0.4,
-            delay: index * 0.4,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        >
-          ✦
-        </motion.span>
+        />
       ))}
-    </>
+    </div>
   );
 }
 
 /* =========================================================
-   CADRE ROYAL
+   HALOS LUMINEUX
 ========================================================= */
 
-function RoyalFrame({ children, dark = false }) {
+function AmbientLights({ dark = true }) {
   return (
-    <div className="relative">
-
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div
-        className={`absolute inset-2 md:inset-4 border pointer-events-none ${
-          dark
-            ? 'border-[#D6B36A]/30'
-            : 'border-[#B98C4D]/25'
-        }`}
+        className="absolute -top-32 -left-32 w-[420px] h-[420px] rounded-full blur-3xl"
+        style={{
+          background: dark
+            ? 'rgba(197,143,165,.14)'
+            : 'rgba(197,143,165,.18)',
+          animation: 'softGlow 7s ease-in-out infinite',
+        }}
       />
 
       <div
-        className={`absolute inset-5 md:inset-7 border pointer-events-none ${
-          dark
-            ? 'border-[#D6B36A]/10'
-            : 'border-[#B98C4D]/10'
-        }`}
+        className="absolute -bottom-40 -right-40 w-[520px] h-[520px] rounded-full blur-3xl"
+        style={{
+          background: dark
+            ? 'rgba(220,199,154,.1)'
+            : 'rgba(220,199,154,.16)',
+          animation: 'softGlow 9s ease-in-out 1s infinite',
+        }}
       />
 
-      {children}
+      <div
+        className="absolute top-[35%] left-[45%] w-[300px] h-[300px] rounded-full blur-3xl"
+        style={{
+          background: dark
+            ? 'rgba(66,42,77,.35)'
+            : 'rgba(228,185,199,.12)',
+          animation: 'softGlow 11s ease-in-out 2s infinite',
+        }}
+      />
+    </div>
+  );
+}
+
+/* =========================================================
+   LUNE
+========================================================= */
+
+function Moon() {
+  return (
+    <div
+      className="relative flex items-center justify-center"
+      style={{
+        width: 105,
+        height: 105,
+        borderRadius: '50%',
+        background: `
+          radial-gradient(
+            circle at 35% 30%,
+            #fffdf4 0%,
+            #f1e5c5 48%,
+            #d9c48f 100%
+          )
+        `,
+        animation: 'moonGlow 5s ease-in-out infinite',
+      }}
+    >
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: 85,
+          height: 85,
+          border: '1px solid rgba(255,255,255,.45)',
+        }}
+      />
+
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: 125,
+          height: 125,
+          border: '1px solid rgba(220,199,154,.18)',
+          animation: 'pulseRing 5s ease-in-out infinite',
+        }}
+      />
+    </div>
+  );
+}
+
+/* =========================================================
+   ORNEMENT
+========================================================= */
+
+function Ornament({ light = false }) {
+  return (
+    <div className="flex items-center justify-center gap-4">
+      <div
+        className="h-px w-16 md:w-24"
+        style={{
+          background: light
+            ? 'linear-gradient(to right, transparent, rgba(241,229,197,.7))'
+            : `linear-gradient(to right, transparent, ${COLORS.champagne})`,
+        }}
+      />
+
+      <div
+        className="relative w-2.5 h-2.5 rotate-45"
+        style={{
+          background: light ? COLORS.champagneLight : COLORS.champagne,
+          boxShadow: `0 0 12px ${
+            light ? 'rgba(241,229,197,.55)' : 'rgba(220,199,154,.35)'
+          }`,
+        }}
+      />
+
+      <div
+        className="h-px w-16 md:w-24"
+        style={{
+          background: light
+            ? 'linear-gradient(to left, transparent, rgba(241,229,197,.7))'
+            : `linear-gradient(to left, transparent, ${COLORS.champagne})`,
+        }}
+      />
     </div>
   );
 }
@@ -269,45 +594,214 @@ function SectionHeading({
 }) {
   return (
     <motion.div
-      variants={stagger}
-      className="text-center relative z-10"
+      variants={fadeUp}
+      className="text-center max-w-2xl mx-auto mb-12"
     >
-      <motion.p
-        variants={fadeUp}
-        className={`text-[9px] uppercase tracking-[0.5em] mb-4 ${
-          light ? 'text-[#E2C98F]' : 'text-[#8D5260]'
-        }`}
+      <p
+        className="uppercase tracking-[.35em] text-[10px] md:text-xs mb-4"
+        style={{
+          color: light ? COLORS.champagneLight : COLORS.rose,
+        }}
       >
         {eyebrow}
-      </motion.p>
+      </p>
 
-      <motion.h2
-        variants={fadeUp}
-        className={`font-serif text-4xl md:text-5xl lg:text-6xl font-normal ${
-          light ? 'text-[#FFF8EB]' : 'text-[#4A1824]'
-        }`}
+      <h2
+        className="font-serif text-4xl md:text-5xl lg:text-6xl"
+        style={{
+          color: light ? COLORS.ivory : COLORS.night,
+          fontFamily: 'Georgia, serif',
+        }}
       >
         {title}
-      </motion.h2>
+      </h2>
 
-      <motion.div
-        variants={fadeUp}
-        className="my-6"
-      >
-        <GoldOrnament light={light} />
-      </motion.div>
+      <div className="mt-5 mb-5">
+        <Ornament light={light} />
+      </div>
 
       {description && (
-        <motion.p
-          variants={fadeUp}
-          className={`max-w-xl mx-auto font-serif italic text-sm md:text-base leading-relaxed ${
-            light ? 'text-[#DECDB5]' : 'text-[#806D68]'
-          }`}
+        <p
+          className="text-sm md:text-base leading-7"
+          style={{
+            color: light
+              ? 'rgba(251,247,241,.7)'
+              : COLORS.muted,
+          }}
         >
           {description}
-        </motion.p>
+        </p>
       )}
     </motion.div>
+  );
+}
+
+/* =========================================================
+   CARTE PROGRAMME
+========================================================= */
+
+function EventCard({
+  icon,
+  title,
+  lieu,
+  heure,
+  delay = 0,
+}) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      whileHover={{
+        y: -8,
+        scale: 1.015,
+      }}
+      transition={{
+        duration: 0.35,
+      }}
+      className="group relative overflow-hidden rounded-[28px] p-[1px]"
+      style={{
+        background: `linear-gradient(
+          135deg,
+          rgba(220,199,154,.75),
+          rgba(197,143,165,.25),
+          rgba(220,199,154,.55)
+        )`,
+      }}
+    >
+      <div
+        className="relative h-full rounded-[27px] p-8 md:p-10 text-center overflow-hidden"
+        style={{
+          background: `
+            radial-gradient(
+              circle at 50% 0%,
+              rgba(197,143,165,.12),
+              transparent 45%
+            ),
+            ${COLORS.ivory}
+          `,
+        }}
+      >
+        <div
+          className="absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full blur-3xl opacity-30"
+          style={{
+            background: COLORS.rose,
+          }}
+        />
+
+        <div className="relative">
+          <div
+            className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-2xl"
+            style={{
+              background: 'rgba(66,42,77,.08)',
+              border: `1px solid rgba(220,199,154,.7)`,
+              color: COLORS.plum,
+              animation: 'breathe 5s ease-in-out infinite',
+            }}
+          >
+            {icon}
+          </div>
+
+          <p
+            className="uppercase tracking-[.3em] text-[10px] mb-3"
+            style={{
+              color: COLORS.rose,
+            }}
+          >
+            {title}
+          </p>
+
+          <h3
+            className="font-serif text-2xl md:text-3xl mb-5"
+            style={{
+              color: COLORS.night,
+              fontFamily: 'Georgia, serif',
+            }}
+          >
+            {lieu || 'Lieu à préciser'}
+          </h3>
+
+          <div
+            className="mx-auto w-12 h-px mb-5"
+            style={{
+              background: COLORS.champagne,
+            }}
+          />
+
+          <p
+            className="text-sm"
+            style={{
+              color: COLORS.muted,
+            }}
+          >
+            {heure || 'Heure à préciser'}
+          </p>
+        </div>
+
+        <div
+          className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          style={{
+            background:
+              'linear-gradient(120deg, transparent 35%, rgba(255,255,255,.5) 50%, transparent 65%)',
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+/* =========================================================
+   ROYAL FRAME — NOM CONSERVE POUR COMPATIBILITE
+========================================================= */
+
+function RoyalFrame({ children, dark = false }) {
+  return (
+    <div
+      className="relative p-3 md:p-5"
+      style={{
+        border: `1px solid ${
+          dark
+            ? 'rgba(220,199,154,.35)'
+            : 'rgba(66,42,77,.2)'
+        }`,
+      }}
+    >
+      <div
+        className="absolute top-0 left-0 w-8 h-8 border-t border-l"
+        style={{
+          borderColor: dark
+            ? COLORS.champagne
+            : COLORS.plum,
+        }}
+      />
+
+      <div
+        className="absolute top-0 right-0 w-8 h-8 border-t border-r"
+        style={{
+          borderColor: dark
+            ? COLORS.champagne
+            : COLORS.plum,
+        }}
+      />
+
+      <div
+        className="absolute bottom-0 left-0 w-8 h-8 border-b border-l"
+        style={{
+          borderColor: dark
+            ? COLORS.champagne
+            : COLORS.plum,
+        }}
+      />
+
+      <div
+        className="absolute bottom-0 right-0 w-8 h-8 border-b border-r"
+        style={{
+          borderColor: dark
+            ? COLORS.champagne
+            : COLORS.plum,
+        }}
+      />
+
+      {children}
+    </div>
   );
 }
 
@@ -331,730 +825,775 @@ function formatDate(date) {
 }
 
 /* =========================================================
-   ROYAL GOLD — NOUVEAU MODÈLE
+   ROYAL GOLD
+   -> DESIGN REMPLACE PAR "NUIT ROMANTIQUE"
 ========================================================= */
 
 export default function RoyalGold({ invitation }) {
-  const dateFormatee = formatDate(
-    invitation.date_mariage
-  );
+  if (!invitation) return null;
+
+  const noms = invitation.noms_maries || 'Les Mariés';
+  const date = formatDate(invitation.date_mariage);
 
   return (
-    <main className="min-h-screen bg-[#FBF5EA] text-[#4B3434] overflow-hidden">
+    <div
+      className="min-h-screen overflow-hidden"
+      style={{
+        background: COLORS.ivory,
+        color: COLORS.text,
+      }}
+    >
+      <style>{ambientStyles}</style>
 
       {/* =====================================================
-          HERO — STYLE ENVELOPPE BORDEAUX
+          HERO
       ===================================================== */}
 
-      <section className="relative min-h-screen bg-[#4A1824] overflow-hidden flex items-center justify-center px-5 py-16">
+      <section
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        style={{
+          background: `
+            radial-gradient(
+              circle at 50% 35%,
+              rgba(66,42,77,.95) 0%,
+              rgba(28,33,69,.96) 30%,
+              ${COLORS.nightDeep} 75%
+            )
+          `,
+        }}
+      >
+        <AmbientLights dark />
+        <StarField dense />
+        <Petals count={12} dark />
 
-        {/* Lumières */}
+        <Sparkle top="18%" left="15%" delay={0.5} scale={0.8} />
+        <Sparkle top="26%" left="80%" delay={1.8} scale={0.65} />
+        <Sparkle top="58%" left="12%" delay={2.4} scale={0.55} />
+        <Sparkle top="65%" left="87%" delay={1.2} scale={0.9} />
 
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.08, 0.18, 0.08],
+        {/* Lune */}
+        <div className="absolute top-[8%] right-[8%] md:right-[13%]">
+          <Moon />
+        </div>
+
+        {/* Halo central */}
+        <div
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(197,143,165,.13), transparent 65%)',
+            animation: 'softGlow 8s ease-in-out infinite',
           }}
-          transition={{
-            duration: 9,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#D6B36A] blur-[120px]"
         />
 
         <motion.div
-          animate={{
-            scale: [1, 1.25, 1],
-            opacity: [0.05, 0.16, 0.05],
-          }}
-          transition={{
-            duration: 11,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -bottom-40 -right-40 w-[550px] h-[550px] rounded-full bg-[#A65463] blur-[130px]"
-        />
-
-        <GoldenParticles />
-
-        <Flower className="-left-8 top-12 opacity-80" />
-        <Flower className="-right-8 bottom-12 rotate-180 opacity-70" />
-
-        {/* Cadre */}
-
-        <RoyalFrame dark>
-          <motion.div
-            initial={{
-              opacity: 0,
-              scale: 0.95,
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+          className="relative z-10 w-full max-w-5xl px-6 text-center"
+        >
+          <motion.p
+            variants={fadeUp}
+            className="uppercase tracking-[.5em] text-[10px] md:text-xs mb-7"
+            style={{
+              color: COLORS.champagneLight,
             }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              duration: 1.4,
-            }}
-            className="relative z-10 w-[calc(100vw-60px)] max-w-6xl min-h-[80vh] flex items-center justify-center px-8 py-20 md:px-16"
           >
+            Une histoire • Un amour • Une promesse
+          </motion.p>
 
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-              className="text-center max-w-5xl"
-            >
-
-              <motion.p
-                variants={fadeUp}
-                className="text-[9px] uppercase tracking-[0.55em] text-[#E2C98F] mb-8"
-              >
-                Avec la bénédiction de leurs familles
-              </motion.p>
-
-              <motion.div
-                variants={scaleIn}
-                className="flex justify-center mb-7"
-              >
-                <div className="w-16 h-16 rounded-full border border-[#D6B36A]/50 flex items-center justify-center">
-                  <div className="w-11 h-11 rounded-full border border-[#D6B36A]/30 flex items-center justify-center">
-                    <span className="text-[#E7CB91] text-lg">
-                      ♡
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.p
-                variants={fadeUp}
-                className="font-serif italic text-xl md:text-2xl text-[#E8D7C3]"
-              >
-                Deux cœurs, une promesse
-              </motion.p>
-
-              <motion.h1
-                variants={fadeUp}
-                className="font-serif font-normal text-5xl sm:text-6xl md:text-8xl lg:text-[8rem] leading-none text-[#FFF8EB] mt-5"
-              >
-                {invitation.noms_maries}
-              </motion.h1>
-
-              <motion.div
-                variants={fadeUp}
-                className="my-9"
-              >
-                <GoldOrnament light />
-              </motion.div>
-
-              <motion.p
-                variants={fadeUp}
-                className="font-serif italic capitalize text-[#E5D2B6] text-base md:text-xl"
-              >
-                {dateFormatee}
-              </motion.p>
-
-              <motion.p
-                variants={fadeUp}
-                className="mt-8 text-[9px] uppercase tracking-[0.4em] text-[#D6B36A]"
-              >
-                Nous vous invitons à partager notre bonheur
-              </motion.p>
-
-              <motion.div
-                variants={fadeUp}
-                className="mt-12 flex justify-center"
-              >
-                <div className="w-8 h-8 border border-[#D6B36A]/50 rotate-45 flex items-center justify-center">
-                  <span className="-rotate-45 text-[#E7CB91] text-xs">
-                    ✦
-                  </span>
-                </div>
-              </motion.div>
-
-            </motion.div>
+          <motion.div variants={scaleIn}>
+            <Ornament light />
           </motion.div>
-        </RoyalFrame>
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-7 mb-4 text-sm md:text-base italic"
+            style={{
+              color: 'rgba(251,247,241,.7)',
+              fontFamily: 'Georgia, serif',
+            }}
+          >
+            Nous avons le bonheur de vous inviter à célébrer
+          </motion.p>
+
+          <motion.div
+            variants={scaleIn}
+            className="relative mx-auto max-w-4xl"
+          >
+            <div
+              className="absolute inset-0 blur-3xl opacity-20"
+              style={{
+                background: COLORS.rose,
+              }}
+            />
+
+            <h1
+              className="relative font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]"
+              style={{
+                color: COLORS.ivory,
+                fontFamily: 'Georgia, serif',
+                textShadow:
+                  '0 0 35px rgba(228,185,199,.16)',
+              }}
+            >
+              {noms}
+            </h1>
+          </motion.div>
+
+          <motion.div
+            variants={fadeUp}
+            className="mt-8 flex items-center justify-center gap-5"
+          >
+            <div
+              className="w-12 md:w-20 h-px"
+              style={{
+                background:
+                  'linear-gradient(to right, transparent, rgba(220,199,154,.7))',
+              }}
+            />
+
+            <span
+              className="text-xl"
+              style={{
+                color: COLORS.champagneLight,
+              }}
+            >
+              ✦
+            </span>
+
+            <div
+              className="w-12 md:w-20 h-px"
+              style={{
+                background:
+                  'linear-gradient(to left, transparent, rgba(220,199,154,.7))',
+              }}
+            />
+          </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            className="mt-7 text-sm md:text-base capitalize"
+            style={{
+              color: COLORS.roseLight,
+              fontFamily: 'Georgia, serif',
+            }}
+          >
+            {date}
+          </motion.p>
+
+          <motion.div
+            variants={fadeUp}
+            className="mt-12"
+          >
+            <RoyalFrame dark>
+              <div className="px-5 py-4">
+                <p
+                  className="text-[10px] uppercase tracking-[.35em]"
+                  style={{
+                    color: 'rgba(251,247,241,.55)',
+                  }}
+                >
+                  Save the date
+                </p>
+
+                <p
+                  className="mt-2 text-sm italic"
+                  style={{
+                    color: COLORS.champagneLight,
+                    fontFamily: 'Georgia, serif',
+                  }}
+                >
+                  Un jour unique à partager ensemble
+                </p>
+              </div>
+            </RoyalFrame>
+          </motion.div>
+        </motion.div>
 
         {/* Scroll */}
-
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center"
+          transition={{
+            delay: 2,
+            duration: 1,
+          }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
         >
-          <span className="block text-[8px] uppercase tracking-[0.4em] text-[#DCC8AB] mb-2">
+          <span
+            className="uppercase tracking-[.3em] text-[9px]"
+            style={{
+              color: 'rgba(251,247,241,.5)',
+            }}
+          >
             Découvrir
           </span>
 
-          <motion.span
+          <motion.div
             animate={{
-              y: [0, 6, 0],
+              y: [0, 8, 0],
             }}
             transition={{
               duration: 1.8,
               repeat: Infinity,
+              ease: 'easeInOut',
             }}
-            className="block text-[#D6B36A]"
-          >
-            ↓
-          </motion.span>
+            className="w-px h-10"
+            style={{
+              background:
+                'linear-gradient(to bottom, rgba(220,199,154,.8), transparent)',
+            }}
+          />
         </motion.div>
       </section>
 
       {/* =====================================================
-          BIENVENUE — CARTE IVOIRE
+          BIENVENUE
       ===================================================== */}
 
-      <section className="relative bg-[#FBF5EA] px-5 py-24 md:py-32 overflow-hidden">
+      <section
+        className="relative py-24 md:py-32 px-6 overflow-hidden"
+        style={{
+          background: COLORS.ivory,
+        }}
+      >
+        <AmbientLights dark={false} />
+        <Petals count={7} />
 
-        <Flower className="-left-10 top-10 opacity-50" />
-        <Flower className="-right-10 bottom-0 rotate-180 opacity-40" />
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={stagger}
-          className="max-w-5xl mx-auto"
-        >
-
-          <SectionHeading
-            eyebrow="Notre histoire"
-            title="Mot de bienvenue"
-            description="Un mot venant du cœur pour vous accueillir dans notre bonheur."
-          />
-
-          {invitation.message_bienvenue && (
-            <motion.div
-              variants={scaleIn}
-              className="relative mt-14 max-w-4xl mx-auto"
-            >
-
-              <div className="bg-[#4A1824] p-2 shadow-[0_25px_70px_rgba(74,24,36,0.16)]">
-
-                <div className="border border-[#D6B36A]/35 p-2">
-
-                  <div className="relative border border-[#D6B36A]/15 px-7 py-14 md:px-20 md:py-16 text-center">
-
-                    <span className="absolute top-3 left-5 md:left-10 text-6xl font-serif text-[#D6B36A]/30">
-                      “
-                    </span>
-
-                    <span className="absolute bottom-0 right-5 md:right-10 text-6xl font-serif text-[#D6B36A]/30">
-                      ”
-                    </span>
-
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.08, 1],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                      }}
-                      className="mx-auto mb-8 w-12 h-12 rounded-full border border-[#D6B36A]/50 flex items-center justify-center text-[#E7CB91]"
-                    >
-                      ♡
-                    </motion.div>
-
-                    <p className="relative font-serif italic text-lg md:text-2xl leading-[1.9] text-[#F8EBDC]">
-                      {invitation.message_bienvenue}
-                    </p>
-
-                    <div className="mt-9">
-                      <GoldOrnament light />
-                    </div>
-
-                    <p className="mt-5 font-serif italic text-sm text-[#D6B36A]">
-                      Avec amour
-                    </p>
-
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-      </section>
-
-      {/* =====================================================
-          COUNTDOWN — BORDEAUX
-      ===================================================== */}
-
-      <section className="relative bg-[#321019] px-5 py-24 md:py-28 overflow-hidden">
-
-        <GoldenParticles />
-
-        <motion.div
-          animate={{
-            rotate: 360,
-          }}
-          transition={{
-            duration: 45,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-          className="absolute -left-32 -top-32 w-72 h-72 rounded-full border border-[#D6B36A]/15"
-        />
-
-        <motion.div
-          animate={{
-            rotate: -360,
-          }}
-          transition={{
-            duration: 55,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-          className="absolute -right-40 -bottom-40 w-96 h-96 rounded-full border border-[#D6B36A]/10"
-        />
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={stagger}
-          className="relative z-10 max-w-5xl mx-auto text-center"
-        >
-
-          <SectionHeading
-            eyebrow="Le grand jour approche"
-            title="Le compte à rebours"
-            description="Chaque seconde nous rapproche de ce moment tant attendu."
-            light
-          />
-
+        <div className="relative max-w-4xl mx-auto">
           <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
             variants={scaleIn}
-            className="mt-12"
           >
-            <Countdown
-              dateMariage={invitation.date_mariage}
-            />
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* =====================================================
-          DÉTAILS
-      ===================================================== */}
-
-      <section className="relative bg-[#F4EBDD] px-5 py-24 md:py-32 overflow-hidden">
-
-        <Flower className="-left-12 top-20 opacity-40" />
-        <Flower className="-right-12 bottom-10 rotate-180 opacity-40" />
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          variants={stagger}
-          className="relative z-10 max-w-6xl mx-auto"
-        >
-
-          <SectionHeading
-            eyebrow="Le programme"
-            title="Le déroulement"
-            description="Deux moments précieux pour célébrer notre union avec ceux que nous aimons."
-          />
-
-          <div className="mt-16 grid md:grid-cols-2 gap-8">
-
-            {/* CÉRÉMONIE */}
-
-            {invitation.lieu_ceremonie && (
-              <motion.div
-                variants={fadeLeft}
-                className="relative"
+            <RoyalFrame>
+              <div
+                className="relative px-6 py-12 md:px-14 md:py-16 text-center overflow-hidden"
+                style={{
+                  background: `
+                    radial-gradient(
+                      circle at 50% 0%,
+                      rgba(197,143,165,.12),
+                      transparent 45%
+                    ),
+                    ${COLORS.cream}
+                  `,
+                }}
               >
-
-                <div className="bg-[#FBF5EA] p-2 shadow-[0_20px_55px_rgba(74,24,36,0.10)]">
-
-                  <div className="border border-[#B98C4D]/35 p-2">
-
-                    <div className="border border-[#B98C4D]/10 px-7 py-10 md:px-10 md:py-12 text-center">
-
-                      <div className="mx-auto w-16 h-16 rounded-full bg-[#4A1824] border border-[#D6B36A] flex items-center justify-center text-[#E7CB91] text-xl">
-                        I
-                      </div>
-
-                      <p className="mt-7 text-[9px] uppercase tracking-[0.4em] text-[#8D5260]">
-                        Premier rendez-vous
-                      </p>
-
-                      <h3 className="font-serif text-3xl md:text-4xl text-[#4A1824] mt-3">
-                        Takku jakka
-                      </h3>
-
-                      <div className="my-6">
-                        <GoldOrnament />
-                      </div>
-
-                      {invitation.heure_ceremonie && (
-                        <p className="font-serif italic text-2xl text-[#8D5260]">
-                          {invitation.heure_ceremonie}
-                        </p>
-                      )}
-
-                      <p className="mt-4 font-serif text-base md:text-lg text-[#6E5A55] leading-relaxed">
-                        {invitation.lieu_ceremonie}
-                      </p>
-
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* RÉCEPTION */}
-
-            {invitation.lieu_reception && (
-              <motion.div
-                variants={fadeRight}
-                className="relative"
-              >
-
-                <div className="bg-[#4A1824] p-2 shadow-[0_20px_60px_rgba(74,24,36,0.22)]">
-
-                  <div className="border border-[#D6B36A]/35 p-2">
-
-                    <div className="border border-[#D6B36A]/10 px-7 py-10 md:px-10 md:py-12 text-center">
-
-                      <div className="mx-auto w-16 h-16 rounded-full border border-[#D6B36A] flex items-center justify-center text-[#E7CB91] text-xl">
-                        II
-                      </div>
-
-                      <p className="mt-7 text-[9px] uppercase tracking-[0.4em] text-[#E2C98F]">
-                        Puis, place à la fête
-                      </p>
-
-                      <h3 className="font-serif text-3xl md:text-4xl text-[#FFF8EB] mt-3">
-                        La réception
-                      </h3>
-
-                      <div className="my-6">
-                        <GoldOrnament light />
-                      </div>
-
-                      {invitation.heure_reception && (
-                        <p className="font-serif italic text-2xl text-[#E7CB91]">
-                          {invitation.heure_reception}
-                        </p>
-                      )}
-
-                      <p className="mt-4 font-serif text-base md:text-lg text-[#E0D0C2] leading-relaxed">
-                        {invitation.lieu_reception}
-                      </p>
-
-                      <div className="mt-7 flex justify-center gap-3 text-[8px] uppercase tracking-[0.3em] text-[#D6B36A]">
-                        <span>Dîner</span>
-                        <span>•</span>
-                        <span>Musique</span>
-                        <span>•</span>
-                        <span>Amour</span>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-          </div>
-
-          <motion.div
-            variants={fadeUp}
-            className="text-center mt-12"
-          >
-            <p className="font-serif italic text-[#7B6460]">
-              Une journée, deux moments, mille souvenirs à créer.
-            </p>
-          </motion.div>
-
-        </motion.div>
-      </section>
-
-      {/* =====================================================
-          GALERIE — NOUVEAU STYLE
-      ===================================================== */}
-
-      <section className="relative bg-[#4A1824] px-5 py-24 md:py-32 overflow-hidden">
-
-        <GoldenParticles />
-
-        <Flower className="-left-10 top-10 opacity-60" />
-        <Flower className="-right-10 bottom-10 rotate-180 opacity-60" />
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
-          variants={stagger}
-          className="relative z-10 max-w-7xl mx-auto"
-        >
-
-          <SectionHeading
-            eyebrow="Notre album"
-            title="Des souvenirs précieux"
-            description="Quelques instants de notre histoire que nous avons le plaisir de partager avec vous."
-            light
-          />
-
-          <motion.div
-            variants={scaleIn}
-            className="mt-14 bg-[#FBF5EA] p-2 shadow-[0_25px_70px_rgba(0,0,0,0.25)]"
-          >
-
-            <div className="border border-[#B98C4D]/40 p-2">
-
-              <div className="border border-[#B98C4D]/15 p-3 md:p-5">
-
-                <Galerie
-                  photos={invitation.photos}
+                <div
+                  className="absolute -top-24 left-1/2 -translate-x-1/2 w-56 h-56 rounded-full blur-3xl"
+                  style={{
+                    background: 'rgba(197,143,165,.12)',
+                    animation: 'softGlow 8s ease-in-out infinite',
+                  }}
                 />
 
+                <div className="relative">
+                  <p
+                    className="uppercase tracking-[.4em] text-[10px] md:text-xs mb-5"
+                    style={{
+                      color: COLORS.rose,
+                    }}
+                  >
+                    Bienvenue
+                  </p>
+
+                  <h2
+                    className="font-serif text-4xl md:text-5xl mb-7"
+                    style={{
+                      color: COLORS.night,
+                      fontFamily: 'Georgia, serif',
+                    }}
+                  >
+                    Un moment précieux
+                  </h2>
+
+                  <div className="mb-8">
+                    <Ornament />
+                  </div>
+
+                  <p
+                    className="max-w-2xl mx-auto text-sm md:text-base leading-8"
+                    style={{
+                      color: COLORS.text,
+                      fontFamily: 'Georgia, serif',
+                    }}
+                  >
+                    {invitation.message_bienvenue ||
+                      'Nous sommes heureux de partager avec vous ce moment unique et précieux.'}
+                  </p>
+
+                  <motion.div
+                    animate={{
+                      y: [0, -8, 0],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                    className="mt-9 text-2xl"
+                    style={{
+                      color: COLORS.rose,
+                    }}
+                  >
+                    ♡
+                  </motion.div>
+                </div>
               </div>
+            </RoyalFrame>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          COMPTE A REBOURS
+      ===================================================== */}
+
+      <section
+        className="relative py-24 md:py-28 px-6 overflow-hidden"
+        style={{
+          background: `
+            radial-gradient(
+              circle at center,
+              ${COLORS.nightSoft} 0%,
+              ${COLORS.night} 50%,
+              ${COLORS.nightDeep} 100%
+            )
+          `,
+        }}
+      >
+        <StarField dense />
+        <AmbientLights dark />
+
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div
+            className="w-[480px] h-[480px] rounded-full"
+            style={{
+              border: '1px solid rgba(220,199,154,.12)',
+              animation: 'pulseRing 7s ease-in-out infinite',
+            }}
+          />
+
+          <div
+            className="absolute w-[360px] h-[360px] rounded-full"
+            style={{
+              border: '1px solid rgba(197,143,165,.1)',
+              animation: 'pulseRing 6s ease-in-out 1s infinite',
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-5xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            variants={stagger}
+          >
+            <SectionHeading
+              eyebrow="Le grand jour approche"
+              title="Compte à rebours"
+              description="Chaque seconde nous rapproche de ce moment que nous avons hâte de partager avec vous."
+              light
+            />
+
+            <motion.div
+              variants={scaleIn}
+              className="relative max-w-3xl mx-auto"
+            >
+              <div
+                className="rounded-[30px] p-5 md:p-8"
+                style={{
+                  background: 'rgba(255,255,255,.035)',
+                  border: '1px solid rgba(220,199,154,.2)',
+                  backdropFilter: 'blur(12px)',
+                }}
+              >
+                <Countdown
+                  dateMariage={invitation.date_mariage}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          PROGRAMME
+      ===================================================== */}
+
+      <section
+        className="relative py-24 md:py-32 px-6 overflow-hidden"
+        style={{
+          background: COLORS.ivory,
+        }}
+      >
+        <AmbientLights dark={false} />
+        <Petals count={8} />
+
+        <div className="relative max-w-6xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.15,
+            }}
+            variants={stagger}
+          >
+            <SectionHeading
+              eyebrow="Le programme"
+              title="Notre journée"
+              description="Deux moments importants, une seule et même journée à célébrer avec ceux que nous aimons."
+            />
+
+            <div className="grid md:grid-cols-2 gap-7 md:gap-9">
+              <EventCard
+                icon="♡"
+                title="La cérémonie"
+                lieu={invitation.lieu_ceremonie}
+                heure={invitation.heure_ceremonie}
+                delay={0}
+              />
+
+              <EventCard
+                icon="✦"
+                title="La réception"
+                lieu={invitation.lieu_reception}
+                heure={invitation.heure_reception}
+                delay={0.15}
+              />
             </div>
           </motion.div>
+        </div>
+      </section>
 
-        </motion.div>
+      {/* =====================================================
+          GALERIE
+      ===================================================== */}
+
+      <section
+        className="relative py-24 md:py-32 px-6 overflow-hidden"
+        style={{
+          background: `
+            linear-gradient(
+              145deg,
+              ${COLORS.nightDeep},
+              ${COLORS.night},
+              ${COLORS.plum}
+            )
+          `,
+        }}
+      >
+        <StarField dense />
+        <AmbientLights dark />
+        <Petals count={8} dark />
+
+        <div className="relative max-w-6xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.15,
+            }}
+            variants={stagger}
+          >
+            <SectionHeading
+              eyebrow="Quelques souvenirs"
+              title="Notre histoire en images"
+              description="Des instants précieux qui racontent un peu de notre histoire."
+              light
+            />
+
+            <motion.div
+              variants={scaleIn}
+              className="relative"
+            >
+              <div
+                className="absolute -inset-5 rounded-[40px] blur-2xl"
+                style={{
+                  background: 'rgba(197,143,165,.08)',
+                }}
+              />
+
+              <div
+                className="relative rounded-[30px] p-4 md:p-7"
+                style={{
+                  background: 'rgba(255,255,255,.035)',
+                  border: '1px solid rgba(220,199,154,.2)',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <Galerie photos={invitation.photos} />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* =====================================================
           LOCALISATION
       ===================================================== */}
 
-      <section className="relative bg-[#FBF5EA] px-5 py-20 md:py-24 overflow-hidden">
+      <section
+        className="relative py-24 md:py-28 px-6 overflow-hidden"
+        style={{
+          background: COLORS.cream,
+        }}
+      >
+        <AmbientLights dark={false} />
 
-        <Flower className="-right-10 top-5 rotate-180 opacity-35" />
+        <div className="relative max-w-5xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.15,
+            }}
+            variants={stagger}
+          >
+            <SectionHeading
+              eyebrow="Retrouvez-nous"
+              title="Le lieu de la réception"
+              description="Nous avons hâte de vous retrouver pour partager ensemble cette magnifique journée."
+            />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={stagger}
-          className="relative z-10 max-w-5xl mx-auto"
-        >
-
-          <SectionHeading
-            eyebrow="Le lieu"
-            title="Retrouvez-nous"
-            description="Nous serons heureux de vous retrouver pour célébrer ensemble ce jour exceptionnel."
-          />
-
-          {invitation.lieu_reception && (
-            <>
-
-              {/* Adresse */}
-
-              <motion.div
-                variants={fadeUp}
-                className="mt-10 text-center"
+            <motion.div
+              variants={scaleIn}
+              className="relative max-w-4xl mx-auto"
+            >
+              <div
+                className="rounded-[30px] p-2 md:p-3"
+                style={{
+                  background: `
+                    linear-gradient(
+                      135deg,
+                      ${COLORS.champagne},
+                      rgba(197,143,165,.4),
+                      ${COLORS.champagne}
+                    )
+                  `,
+                }}
               >
+                <div
+                  className="rounded-[26px] overflow-hidden"
+                  style={{
+                    background: COLORS.ivory,
+                  }}
+                >
+                  <div className="p-6 md:p-8 text-center">
+                    <p
+                      className="uppercase tracking-[.3em] text-[10px] mb-3"
+                      style={{
+                        color: COLORS.rose,
+                      }}
+                    >
+                      Réception
+                    </p>
 
-                <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#4A1824] border border-[#D6B36A]/40 shadow-lg">
+                    <h3
+                      className="font-serif text-2xl md:text-3xl"
+                      style={{
+                        color: COLORS.night,
+                        fontFamily: 'Georgia, serif',
+                      }}
+                    >
+                      {invitation.lieu_reception ||
+                        'Lieu de réception'}
+                    </h3>
+                  </div>
 
-                  <span className="text-[#E7CB91]">
-                    ✦
-                  </span>
-
-                  <span className="font-serif text-sm text-[#F4E5D3]">
-                    {invitation.lieu_reception}
-                  </span>
-
-                </div>
-
-              </motion.div>
-
-              {/* Carte */}
-
-              <motion.div
-                variants={scaleIn}
-                className="mt-8 max-w-4xl mx-auto"
-              >
-
-                <div className="bg-[#4A1824] p-2 shadow-[0_20px_60px_rgba(74,24,36,0.18)]">
-
-                  <div className="border border-[#D6B36A]/35 p-2">
-
-                    <div className="relative h-[240px] sm:h-[280px] md:h-[320px] overflow-hidden border border-[#D6B36A]/15">
-
+                  <div className="px-2 pb-2 md:px-3 md:pb-3">
+                    <div
+                      className="overflow-hidden rounded-[22px]"
+                      style={{
+                        minHeight: 300,
+                      }}
+                    >
                       <GoogleMap
                         adresse={invitation.lieu_reception}
                       />
-
                     </div>
-
                   </div>
+
+                  {invitation.lieu_reception && (
+                    <div className="px-6 pb-7 text-center">
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          invitation.lieu_reception
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-[.18em] transition-all duration-300 hover:-translate-y-1"
+                        style={{
+                          background: COLORS.night,
+                          color: COLORS.champagneLight,
+                          boxShadow:
+                            '0 10px 25px rgba(17,21,47,.15)',
+                        }}
+                      >
+                        <span>⌖</span>
+                        Ouvrir dans Google Maps
+                      </a>
+                    </div>
+                  )}
                 </div>
-
-              </motion.div>
-
-              {/* Bouton */}
-
-              <motion.div
-                variants={fadeUp}
-                className="text-center mt-7"
-              >
-
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    invitation.lieu_reception || ''
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-6 py-3 bg-[#4A1824] text-[#F8E9D4] border border-[#D6B36A]/50 text-[9px] uppercase tracking-[0.3em] hover:bg-[#6B2635] transition-all duration-300"
-                >
-                  <span>Voir l'itinéraire</span>
-                  <span className="text-[#E7CB91]">
-                    →
-                  </span>
-                </a>
-
-              </motion.div>
-            </>
-          )}
-
-        </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* =====================================================
           PARTAGE
       ===================================================== */}
 
-      <section className="relative bg-[#F4EBDD] px-5 py-24 md:py-28 overflow-hidden">
+      <section
+        className="relative py-24 md:py-28 px-6 overflow-hidden"
+        style={{
+          background: COLORS.ivory,
+        }}
+      >
+        <AmbientLights dark={false} />
 
-        <motion.div
-          animate={{
-            rotate: 360,
-          }}
-          transition={{
-            duration: 50,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[430px] h-[430px] rounded-full border border-[#B98C4D]/10"
-        />
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={stagger}
-          className="relative z-10 max-w-2xl mx-auto text-center"
-        >
-
+        <div className="relative max-w-3xl mx-auto text-center">
           <motion.div
-            variants={scaleIn}
-            className="mx-auto w-16 h-16 rounded-full bg-[#4A1824] border border-[#D6B36A] flex items-center justify-center text-[#E7CB91] text-xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            variants={stagger}
           >
-            ♡
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            className="mt-7 text-[9px] uppercase tracking-[0.5em] text-[#8D5260]"
-          >
-            Partagez notre bonheur
-          </motion.p>
-
-          <motion.h2
-            variants={fadeUp}
-            className="font-serif text-4xl md:text-5xl text-[#4A1824] mt-4"
-          >
-            Faites-en profiter vos proches
-          </motion.h2>
-
-          <motion.div
-            variants={fadeUp}
-            className="my-7"
-          >
-            <GoldOrnament />
-          </motion.div>
-
-          <motion.div variants={fadeUp}>
-            <PartageBoutons
-              url={window.location.href}
-              texte={`Vous êtes invité(e) au mariage de ${invitation.noms_maries} !`}
+            <SectionHeading
+              eyebrow="Faites circuler l'amour"
+              title="Partager notre bonheur"
+              description="Invitez à votre tour vos proches à découvrir ce moment qui nous est si précieux."
             />
-          </motion.div>
 
-        </motion.div>
+            <motion.div
+              variants={scaleIn}
+              className="relative"
+            >
+              <div
+                className="absolute inset-0 rounded-[35px] blur-3xl"
+                style={{
+                  background:
+                    'radial-gradient(circle, rgba(197,143,165,.12), transparent 65%)',
+                }}
+              />
+
+              <div
+                className="relative rounded-[30px] p-8 md:p-12"
+                style={{
+                  background: COLORS.cream,
+                  border: '1px solid rgba(220,199,154,.45)',
+                }}
+              >
+                <motion.div
+                  animate={{
+                    scale: [1, 1.08, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                  }}
+                  className="text-4xl mb-6"
+                  style={{
+                    color: COLORS.rose,
+                  }}
+                >
+                  ♡
+                </motion.div>
+
+                <PartageBoutons
+                  url={window.location.href}
+                  texte={`Vous êtes invité(e) au mariage de ${noms} !`}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* =====================================================
           FOOTER
       ===================================================== */}
 
-      <footer className="relative bg-[#321019] px-6 py-20 text-center overflow-hidden">
-
-        <GoldenParticles />
+      <footer
+        className="relative py-20 px-6 overflow-hidden text-center"
+        style={{
+          background: COLORS.nightDeep,
+        }}
+      >
+        <StarField dense />
+        <AmbientLights dark />
 
         <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={stagger}
-          className="relative z-10 max-w-xl mx-auto"
+          animate={{
+            y: [0, -8, 0],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="relative z-10"
         >
+          <Ornament light />
 
-          <motion.div
-            variants={fadeUp}
-            className="flex items-center justify-center gap-4 mb-8"
+          <p
+            className="mt-8 font-serif text-3xl md:text-4xl"
+            style={{
+              color: COLORS.ivory,
+              fontFamily: 'Georgia, serif',
+            }}
           >
-            <span className="w-16 h-px bg-[#D6B36A]/60" />
+            {noms}
+          </p>
 
-            <span className="text-[#E7CB91]">
-              ✦
-            </span>
-
-            <span className="w-16 h-px bg-[#D6B36A]/60" />
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            className="font-serif italic text-2xl md:text-3xl text-[#FFF8EB]"
+          <p
+            className="mt-4 text-sm italic"
+            style={{
+              color: COLORS.roseLight,
+              fontFamily: 'Georgia, serif',
+            }}
           >
-            {invitation.noms_maries}
-          </motion.p>
+            Avec tout notre amour
+          </p>
 
-          <motion.p
-            variants={fadeUp}
-            className="mt-5 text-[8px] uppercase tracking-[0.45em] text-[#D6B36A]"
+          <div
+            className="mt-8 text-xl"
+            style={{
+              color: COLORS.champagneLight,
+              animation: 'breathe 3s ease-in-out infinite',
+            }}
           >
-            Une histoire • Un amour • Une vie
-          </motion.p>
+            ♡
+          </div>
 
-          <motion.div
-            variants={fadeUp}
-            className="mt-8"
+          <p
+            className="mt-10 text-[9px] uppercase tracking-[.3em]"
+            style={{
+              color: 'rgba(251,247,241,.35)',
+            }}
           >
-            <motion.span
-              animate={{
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-              }}
-              className="inline-block text-[#D6B36A]"
-            >
-              ♡
-            </motion.span>
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            className="mt-6 text-[8px] text-[#A88C86]"
-          >
-            Avec amour • Pour toujours
-          </motion.p>
-
+            Une journée • Un souvenir • Pour toujours
+          </p>
         </motion.div>
       </footer>
-
-    </main>
+    </div>
   );
 }
